@@ -1,12 +1,13 @@
+import { Link } from "react-router-dom";
 import { Button } from "./Button";
 
 import { ButtonCarrito } from "./ButtonCarrito";
 
 export const Navbar = () => {
   return (
-    <div className="navbar bg-orange-600">
+    <div className="navbar bg-colorPpal text-colorSec">
       <div className="navbar-start">
-        <p className="text-lg font-semibold pl-5"> El Buen Sabor</p>
+        <Link to={'/'}> <button className="text-lg btn font-semibold pl-5 bg-colorPpal border-colorPpal hover:bg-hoverPpal hover:border-hoverPpal"> El Buen Sabor</button></Link>
       </div>
       <div className="flex navbar-center w-2/3">
         <Button/>
@@ -18,7 +19,7 @@ export const Navbar = () => {
           />
         </div>
       </div>
-      <div className="navbar-end ">
+      <div className="navbar-end mr-2">
         <ButtonCarrito/>
       </div>
     </div>

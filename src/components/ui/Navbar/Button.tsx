@@ -1,7 +1,7 @@
 export const Button = () => {
   return (
     <div className="dropdown dropdown-bottom ">
-      <summary tabIndex={0} role="button" className="menu menu-horizontal btn m-1 bg-orange-600 border-orange-600">
+      <summary tabIndex={0} role="button" className="menu menu-horizontal btn m-1 bg-colorPpal border-colorPpal">
       Productos
       </summary>
       <ul

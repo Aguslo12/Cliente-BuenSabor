@@ -7,5 +7,15 @@ module.exports = {
   daisyui: {
     themes: ["light"],
   },
+  theme: {
+    extend: {
+      colors: {
+        colorPpal: '#d9754a',
+        hoverPpal: '#B05F3C',
+        colorSec: '#2f302b',
+        backColor: '#e4e3d3'
+      },
+    },
+  },
   plugins: [require('daisyui')],
 };
