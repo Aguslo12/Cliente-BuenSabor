@@ -1,42 +1,34 @@
-import { FC, useEffect, useState } from "react";
-import { IEmpresa } from "../../../types/Empresa";
-import { BackendMethods } from "../../../services/BackendClient";
-import { IItem } from "../../../types/Table/TableItem";
+import { FC } from "react";
+import { IEmpresaShort } from "../../../types/ShortDtos/EmpresaShort";
+import { FaAngleRight } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-export const CardEmpresa: FC<IEmpresa> = ({
-  id,
-  nombre,
-  razonSocial,
-  cuil,
-  sucursales,
-}) => {
-  const backend = new BackendMethods();
-  const [data, setData] = useState<IEmpresa[]>([]);
+export const CardEmpresa: FC<IEmpresaShort> = ({ nombre, imagenes, id }) => {
 
-  const traerDatos = async () => {
-    const datos = await backend.getById(id); // Asegúrate de definir `fetchIdData`
-    setData(datos);
-  };
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    traerDatos();
-  }, [id]);
+  function pushCard(nombre: string) {
+    const idEmpresa = id;
+    navigate(`/${idEmpresa}/sucursales`, { state: { nombre } })
+  }
 
   return (
-    <div className="card card-compact w-96 bg-base-100 shadow-xl">
-      <figure>
-        <img
-          src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
-          alt="Shoes"
-        />
-      </figure>
-      <div className="card-body">
-        <h2 className="card-title">Shoes!</h2>
-        <p>If a dog chews shoes whose shoes does he choose?</p>
-        <div className="card-actions justify-end">
-          <button className="btn btn-primary">Buy Now</button>
+    <>
+      <a className="bg-white shadow-md border hover:border rounded-md hover:border-black mx-4 overflow-hidden size-40 w-72" onClick={() => pushCard(nombre)}>
+        <div className="">
+          {imagenes.map((foto) => (
+            <img src={foto.url} alt={foto.name} className="h-28 w-full" />
+          ))}
         </div>
-      </div>
-    </div>
+        <div className="flex w-full">
+          <h1 className="flex text-black font-semibold p-3 text-left w-full">
+            {nombre}
+          </h1>
+          <p className="flex text-right items-center p-3">
+            <FaAngleRight />
+          </p>
+        </div>
+      </a>
+    </>
   );
 };

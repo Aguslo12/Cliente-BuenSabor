@@ -1,10 +1,9 @@
-import { IUnidadMedida } from "./UnidadMedida";
+import { IUnidadMedida } from "../UnidadMedida";
 
-export interface IArticuloInsumo {
+export interface IInsumoCreate {
   id: number;
   denominacion: string;
   precioVenta: number;
-  imagenes: [];
   unidadMedida: IUnidadMedida;
   precioCompra: number;
   stockActual: number;

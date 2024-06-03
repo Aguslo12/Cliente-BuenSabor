@@ -1,6 +1,7 @@
-import { IUnidadMedida } from "./UnidadMedida";
+import { ICategoria } from "../Categoria";
+import { IUnidadMedida } from "../UnidadMedida";
 
-export interface IArticuloInsumo {
+export interface IArticuloInsumoCategoria {
   id: number;
   denominacion: string;
   precioVenta: number;
@@ -12,5 +13,5 @@ export interface IArticuloInsumo {
   stockMinimo: number;
   esParaElaborar: boolean;
   eliminado: boolean;
-  idCategoria: number;
+  categoria: ICategoria;
 }

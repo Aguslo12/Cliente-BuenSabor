@@ -1,11 +1,12 @@
-import { IArticuloManufacturadoDetalle } from "./ArticuloManufacturadoDetalle";
-import { IUnidadMedida } from "./UnidadMedida";
+import { IArticuloManufacturadoDetalle } from "../ArticuloManufacturadoDetalle";
+import { ICategoria } from "../Categoria";
+import { IUnidadMedida } from "../UnidadMedida";
 
-export interface IArticuloManufacturado {
+export interface IArticuloManufacturadoCategoria {
   id: number;
   denominacion: string;
   precioVenta: number;
-  imagenes: FileList;
+  imagenes: [];
   unidadMedida: IUnidadMedida;
   descripcion: string;
   tiempoEstimadoMinutos: number;
@@ -13,5 +14,5 @@ export interface IArticuloManufacturado {
   articuloManufacturadoDetalles: IArticuloManufacturadoDetalle[];
   stock: number;
   eliminado: boolean;
-  idCategoria: number;
+  categoria: ICategoria;
 }

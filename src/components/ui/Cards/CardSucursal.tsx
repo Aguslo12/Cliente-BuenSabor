@@ -1,25 +1,44 @@
-import React, { FC } from 'react'
-import { ISucursalShort } from '../../../types/ShortDtos/SucursalShort'
-import { Link } from 'react-router-dom'
+import React, { FC } from "react";
+import { ISucursalShort } from "../../../types/ShortDtos/SucursalShort";
+import { Link } from "react-router-dom";
+import { FaAngleRight } from "react-icons/fa";
 
-const CardSucursal: FC<ISucursalShort> = ({ domicilio, eliminado, esCasaMatriz, horarioApertura, horarioCierre, id, idEmpresa, nombre }) => {
-    return (
+const CardSucursal: FC<ISucursalShort> = ({
+  domicilio,
+  eliminado,
+  esCasaMatriz,
+  horarioApertura,
+  horarioCierre,
+  id,
+  idEmpresa,
+  nombre,
+  imagenes,
+}) => {
 
-        <>
-            <Link to={`categorias/${id}`} className='bg-white border  rounded-xl mx-4 overflow-hidden size-48'>
-                <div className=" ">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8Eo0ef-CXKCPZRAhj7l4SNlAG6yT0EEPofA&s"
-                        alt="Shoes" className="rounded-tr-xl rounded-tl-xl w-full h-32" />
-                </div>
 
 
-                <div className=' z-40 h-52 border'>
-                    <h1 className='text-black font-semibold p-5 text-center '>{nombre}</h1>
-                </div>
-            </Link>
+  return (
+    <>
+      <Link
+        className="bg-white shadow-md border hover:border rounded-md hover:border-black mx-4 overflow-hidden size-40 w-72"
+        to={`categorias/${id}`}
+      >
+        <div className="">
+          {imagenes.map((foto) => (
+            <img src={foto.url} alt={foto.name} className="h-28 w-full" />
+          ))}
+        </div>
+        <div className="flex w-full">
+          <h1 className="flex text-black font-semibold p-3 text-left w-full">
+            {nombre}
+          </h1>
+          <p className="flex text-right items-center p-3">
+            <FaAngleRight/>
+          </p>
+        </div>
+      </Link>
+    </>
+  );
+};
 
-        </>
-    )
-}
-
-export default CardSucursal
+export default CardSucursal;
