@@ -21,7 +21,7 @@ const CardSucursal: FC<ISucursalShort> = ({
 
   const actualizar = () => {
     const detalle: ISucursalShort = {
-      id: 0,
+      id: id,
       domicilio: domicilio,
       eliminado: eliminado,
       esCasaMatriz: esCasaMatriz,

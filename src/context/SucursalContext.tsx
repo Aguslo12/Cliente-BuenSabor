@@ -2,7 +2,7 @@ import { ReactNode, createContext, useState } from "react";
 import { ISucursalShort } from "../types/ShortDtos/SucursalShort";
 
 interface SucursalContextType {
-  suc: ISucursalShort | undefined;
+  suc: ISucursalShort | null;
   updateSucursal: (sucursal: ISucursalShort) => void;
 }
 
@@ -11,9 +11,11 @@ export const SucursalContext = createContext<SucursalContextType | undefined>(
 );
 
 export function SucursalContextProvider({ children }: { children: ReactNode }) {
-  const [suc, setSuc] = useState<ISucursalShort | undefined>(undefined);
+  const [suc, setSuc] = useState<ISucursalShort | null>(null);
 
   const updateSucursal = (sucursal: ISucursalShort) => {
+    console.log("SUCURSAL ID")
+    console.log(sucursal.id)
     setSuc(sucursal);
   };
 

@@ -1,25 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { useCarrito } from "../../../hooks/useContext";
+import { useCarrito, useSucursalContext } from "../../../hooks/useContext";
 import { IPedido } from "../../../types/Pedidos";
 import { BackendMethods } from "../../../services/BackendClient";
 import { IDetallePedido } from "../../../types/DetallePedido";
 import { IDomicilio } from "../../../types/Domicilio/Domicilio";
+import { ISucursalShort } from "../../../types/ShortDtos/SucursalShort";
+import { IDetallePedidoIdArt } from "../../../types/DetallePedidoIdArt";
 
 export const ContainerCarrito = () => {
     const { cart } = useCarrito();
   const backend = new BackendMethods();
-
+    const { suc } = useSucursalContext();
+    console.log(`ESTO ES LA SUCURSAL`)
+    console.log(suc)
 
   type FormState = {
     [key: string]: any;
     id: number;
-    detallesPedido: IDetallePedido[];
+    eliminado: boolean;
+    detallesPedido: IDetallePedidoIdArt[];
     total: number;
     estado: string;
     tipoEnvio: string;
     domicilio: IDomicilio | null;
-    sucursal: string | null;
-    empresa: string | null;
+    sucursal: ISucursalShort | null;
   };
 
   const calcularTotalProductos = () => {
@@ -46,14 +50,14 @@ export const ContainerCarrito = () => {
     id: 0,
     detallesPedido: cart.map(item => ({
       cantidad: item.cantidad,
-      articulo: item.articulo
-    } as IDetallePedido)),
+      articulo: item.articulo.id
+    } as unknown as IDetallePedidoIdArt)),
+    eliminado: false,
     total: calcularTotalProductos(),
     estado: 'PREPARACION',
     tipoEnvio: 'DELIVERY',
     domicilio: hardcodedDomicilio,
-    sucursal: null,
-    empresa: null,
+    sucursal: suc,
   });
 
   useEffect(() => {
@@ -61,25 +65,19 @@ export const ContainerCarrito = () => {
       ...prevState,
       detallesPedido: cart.map(item => ({
         cantidad: item.cantidad,
-        articulo: item.articulo
-      } as IDetallePedido)),
+        idArticulo: item.articulo.id
+      } as unknown as IDetallePedidoIdArt)),
       total: calcularTotalProductos()
     }));
   }, [cart]);
 
-  const validateFormState = (formState: FormState) => {
-    if (formState.detallesPedido.some(detalle => detalle.articulo.id == null || detalle.articulo.eliminado)) {
-      throw new Error("Uno o más artículos en el pedido están eliminados o no tienen ID válido.");
-    }
-    if (formState.tipoEnvio === 'DELIVERY' && formState.domicilio == null) {
-      throw new Error("Para el envío a domicilio, el domicilio no puede ser nulo.");
-    }
-  };
-
   const postPedido = async () => {
     try {
-      validateFormState(formState);
+        console.log("RE PORONGA")
+        console.log(formState)
       const res: IPedido = await backend.post(`${import.meta.env.VITE_LOCAL}pedido`, formState);
+      console.log("PORONGUITA")
+      console.log(res)
     } catch (error) {
       console.error("Error posting pedido:", error);
     }

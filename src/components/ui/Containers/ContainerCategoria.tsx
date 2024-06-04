@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { BackendMethods } from '../../../services/BackendClient';
 import { useParams } from 'react-router-dom';
-import { ICategoria } from '../../../types/Categoria';
 import CardCategoria from '../Cards/CardCategoria';
-import { ICategoriaShort } from '../../../types/ShortDtos/ICategoriaShort';
+import { ICategoriaShort } from '../../../types/ShortDtos/CategoriaShort';
 
 const ContainerCategoria = () => {
 
