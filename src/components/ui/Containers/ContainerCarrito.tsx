@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCarrito, useSucursalContext } from "../../../hooks/useContext";
 import { IPedido } from "../../../types/Pedidos";
 import { BackendMethods } from "../../../services/BackendClient";
-import { IDetallePedido } from "../../../types/DetallePedido";
 import { IDomicilio } from "../../../types/Domicilio/Domicilio";
 import { ISucursalShort } from "../../../types/ShortDtos/SucursalShort";
 import { IDetallePedidoIdArt } from "../../../types/DetallePedidoIdArt";

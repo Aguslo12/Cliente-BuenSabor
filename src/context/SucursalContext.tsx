@@ -14,8 +14,7 @@ export function SucursalContextProvider({ children }: { children: ReactNode }) {
   const [suc, setSuc] = useState<ISucursalShort | null>(null);
 
   const updateSucursal = (sucursal: ISucursalShort) => {
-    console.log("SUCURSAL ID")
-    console.log(sucursal.id)
+
     setSuc(sucursal);
   };
 
