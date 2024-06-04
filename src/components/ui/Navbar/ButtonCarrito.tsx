@@ -23,7 +23,7 @@ export const ButtonCarrito = () => {
       <div
         tabIndex={0}
         role="button"
-        className="btn rounded-2xl btn-ghost text-white bg-colorSec hover:bg-white hover:text-colorSec w-48"
+        className="btn rounded-2xl text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-48"
       >
 
         <div className="text-lg">$ {calcularTotalProductos()}</div>
@@ -37,10 +37,10 @@ export const ButtonCarrito = () => {
       >
         <div className="card-body ">
           <span className="font-bold text-lg text-colorSec">{suma} Productos</span>
-          <span className=" text-colorSec">Total: $ {calcularTotalProductos()}</span>
+          <span className=" text-colorSec text-base">Total: $ {calcularTotalProductos()}</span>
           <div >
             <Link to={"/carrito"} className="card-actions">
-              <button className="btn bg-colorSec text-slate-200 hover:text-colorSec hover:border-colorSec w-full">
+              <button className="btn text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-full">
                 Ver Carrito
               </button>
             </Link>

@@ -15,7 +15,7 @@ export const CardArticuloCarrito = () => {
               prod.cantidad !== 0 && (
                 <div
                   key={prod.articulo.id}
-                  className="card card-compact w-96 shadow-xl bg-white m-10 h-full"
+                  className="card card-compact w-96 shadow-xl bg-white m-10 h-full border-[#2f302b] "
                 >
                   <figure>
                     <img src={prod.articulo.imagenes[0].url} className="h-44 w-full" />

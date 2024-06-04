@@ -7,7 +7,7 @@ export const Navbar = () => {
   return (
     <>
 
-      <div className="navbar bg-white border-b text-colorSec fixed z-50 p-4">
+      <div className="navbar bg-white border-b-2 text-colorSec fixed z-50 p-4  shadow">
         <div className="navbar-start">
           <Link to={'/'}> <button className="text-red-600 font-bold text-3xl"> El Buen Sabor</button></Link>
         </div>
