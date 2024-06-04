@@ -13,8 +13,6 @@ const ContainerEmpresa = () => {
       const res: IEmpresaShort[] = (await backend.getAll(
         `${import.meta.env.VITE_LOCAL}empresa/noEliminados`
       )) as IEmpresaShort[];
-      console.log("LAS EMPRESAS");
-      console.log(res);
       SetEmpresas(res);
     };
     traerEmpresas();

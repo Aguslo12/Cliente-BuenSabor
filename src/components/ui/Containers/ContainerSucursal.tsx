@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BackendMethods } from "../../../services/BackendClient";
 import { ISucursalShort } from "../../../types/ShortDtos/SucursalShort";
 import CardSucursal from "../Cards/CardSucursal";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { IEmpresaShort } from "../../../types/ShortDtos/EmpresaShort";
 
 const ContainerSucursal = () => {
@@ -20,8 +20,6 @@ const ContainerSucursal = () => {
         );
         const sucursales: ISucursalShort[] = res.sucursales;
         SetSucursales(sucursales);
-        console.log("LAS SUCURSALES");
-        console.log(sucursales);
       } catch (error) {
         console.log(error);
       }

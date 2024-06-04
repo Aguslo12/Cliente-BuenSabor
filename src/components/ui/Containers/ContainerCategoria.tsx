@@ -13,8 +13,6 @@ const ContainerCategoria = () => {
 
     const [categorias, setCategorias] = useState<ICategoriaShort[]>([])
 
-    console.log(idSucursal);
-
     useEffect(() => {
         const traerCategorias = async () => {
             const res: ICategoriaShort[] = await backend.getAll(`${import.meta.env.VITE_LOCAL}sucursal/getCategorias/${idSucursal}`) as ICategoriaShort[]
@@ -22,8 +20,6 @@ const ContainerCategoria = () => {
         }
         traerCategorias()
     }, [])
-
-    console.log(categorias)
 
     return (
         <div className='pt-14 bg-white'>

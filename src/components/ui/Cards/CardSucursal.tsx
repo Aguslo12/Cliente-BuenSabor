@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { ISucursalShort } from "../../../types/ShortDtos/SucursalShort";
 import { Link } from "react-router-dom";
 import { FaAngleRight } from "react-icons/fa";
+import { useSucursalContext } from "../../../hooks/useContext";
 
 const CardSucursal: FC<ISucursalShort> = ({
   domicilio,
@@ -15,13 +16,32 @@ const CardSucursal: FC<ISucursalShort> = ({
   imagenes,
 }) => {
 
+  const { updateSucursal } = useSucursalContext();
 
+
+  const actualizar = () => {
+    const detalle: ISucursalShort = {
+      id: 0,
+      domicilio: domicilio,
+      eliminado: eliminado,
+      esCasaMatriz: esCasaMatriz,
+      horarioApertura: horarioApertura,
+      horarioCierre: horarioCierre,
+      idEmpresa: idEmpresa,
+      imagenes: imagenes,
+      nombre: nombre,
+    }
+    updateSucursal(detalle)
+    console.log("DETALLE SCURUSALES")
+    console.log(detalle)
+  }
 
   return (
     <>
       <Link
         className="bg-white shadow-md border hover:border rounded-md hover:border-black mx-4 overflow-hidden size-40 w-72"
         to={`categorias/${id}`}
+        onClick={actualizar}
       >
         <div className="">
           {imagenes.map((foto) => (

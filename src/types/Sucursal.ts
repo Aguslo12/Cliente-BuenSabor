@@ -5,7 +5,7 @@ import { IPromos } from "./Promos";
 
 export interface ISucursal {
   id: number;
-  eliimnado: boolean;
+  eliminado: boolean;
   esCasaMatriz: boolean;
   nombre: string;
   horarioApertura: string;

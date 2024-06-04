@@ -13,8 +13,6 @@ export const ContainerPromocion = () => {
       const res: IPromosShort[] = (await backend.getAll(
         `${import.meta.env.VITE_LOCAL}promocion/noEliminados`
       )) as IPromosShort[];
-      console.log("LAS PROMOS");
-      console.log(res);
       SetPromociones(res);
     };
     traerPromos();

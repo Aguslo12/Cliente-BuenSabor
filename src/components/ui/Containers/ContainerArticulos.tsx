@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IArticuloManufacturado } from '../../../types/ArticuloManufacturado'
 import { BackendMethods } from '../../../services/BackendClient';
 import CardArticulo from '../Cards/CardArticulo';
-import { IItem } from '../../../types/Table/TableItem';
 
 const ContainerArticulos = () => {
 
