@@ -3,17 +3,18 @@ import { ContainerPromocion } from "../../ui/Containers/ContainerPromocion";
 
 export const EmpresaInicio = () => {
   return (
-    <div className="w-2/3 flex h-2/4 justify-center pt-36 flex-col">
-      <h1 className="flex text-3xl font-semibold p-5 pb-10">Hola. ¿Qué vas a pedir hoy?</h1>
+    <div className="w-full p-5 flex h-2/4 justify-center pt-36 flex-col">
 
+      <div className="text-center flex justify-center items-center w-full">
+        <h1 className="text-3xl font-bold text-center mt-4 w-max p-4 rounded-xl   text-white bg-red-600">Nuestras empresas afiliadas:</h1>
+      </div>
       <div>
-        <p className="text-3xl font-semibold flex p-5">Empresas</p>
         <ContainerEmpresa />
       </div>
 
       <div className="mt-10">
         <p className="text-3xl font-semibold flex p-5">Nuestras Promos</p>
-        <ContainerPromocion/>
+        <ContainerPromocion />
       </div>
     </div>
   );

@@ -15,6 +15,9 @@ module.exports = {
         colorSec: '#2f302b',
         backColor: '#e4e3d3'
       },
+      backgroundImage: theme => ({
+        'fondo': "url('/fondo.jpg')", // Agrega tu imagen de fondo aquí
+      })
     },
   },
   plugins: [require('daisyui')],
