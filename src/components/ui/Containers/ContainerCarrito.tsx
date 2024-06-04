@@ -73,11 +73,7 @@ export const ContainerCarrito = () => {
 
   const postPedido = async () => {
     try {
-        console.log("RE PORONGA")
-        console.log(formState)
       const res: IPedido = await backend.post(`${import.meta.env.VITE_LOCAL}pedido`, formState);
-      console.log("PORONGUITA")
-      console.log(res)
     } catch (error) {
       console.error("Error posting pedido:", error);
     }
