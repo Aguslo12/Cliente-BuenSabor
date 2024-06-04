@@ -17,19 +17,22 @@ const ContainerEmpresa = () => {
     };
     traerEmpresas();
   }, []);
+
   return (
-    <div className="flex flex-row flex-wrap ">
+    <div className="flex flex-row flex-wrap mt-4">
       {empresas.map((empresa, index) => (
-        <CardEmpresa
-          cuil={empresa.cuil}
-          id={empresa.id}
-          nombre={empresa.nombre}
-          razonSocial={empresa.razonSocial}
-          key={index}
-          eliminado={empresa.eliminado}
-          imagenes={empresa.imagenes}
-          sucursales={empresa.sucursales}
-        />
+        <>
+          <CardEmpresa
+            cuil={empresa.cuil}
+            id={empresa.id}
+            nombre={empresa.nombre}
+            razonSocial={empresa.razonSocial}
+            key={index}
+            eliminado={empresa.eliminado}
+            imagenes={empresa.imagenes}
+            sucursales={empresa.sucursales}
+          />
+        </>
       ))}
     </div>
   );

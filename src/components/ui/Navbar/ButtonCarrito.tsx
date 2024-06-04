@@ -25,7 +25,7 @@ export const ButtonCarrito = () => {
         role="button"
         className="btn rounded-2xl btn-ghost text-white bg-colorSec hover:bg-white hover:text-colorSec w-48"
       >
-        <div className="text-lg">Carrito / </div>
+
         <div className="text-lg">$ {calcularTotalProductos()}</div>
         <div className="text-lg">
           <FaShoppingCart />

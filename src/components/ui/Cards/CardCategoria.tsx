@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { ICategoriaShort } from '../../../types/ShortDtos/ICategoriaShort'
+import { ICategoriaShort } from '../../../types/ShortDtos/CategoriaShort';
 import { PiBowlFood } from "react-icons/pi";
 
 
