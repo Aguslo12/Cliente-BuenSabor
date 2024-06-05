@@ -13,8 +13,6 @@ const Hero = () => {
                     <p className="py-6  text-white  text-2xl text-center">Tu comida favorita, a un <span className='text-red-600'>click</span> de distancia.</p>
                     <button className="btn  bg-red-600 hover:bg-red-700 border-none text-white w-full">Registrarse</button>
                 </div>
-                <ContainerEmpresaCarousel />
-
             </div>
             {/* 
             <div className='hero-content '>

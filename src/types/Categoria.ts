@@ -1,7 +1,6 @@
 import { IArticuloInsumo } from "./ArticuloInsumo";
 import { IArticuloManufacturado } from "./ArticuloManufacturado";
 import { ISucursalShort } from "./ShortDtos/SucursalShort";
-import { ISucursal } from "./Sucursal";
 
 export interface ICategoria {
   id: number;

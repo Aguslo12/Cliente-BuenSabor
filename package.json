@@ -19,6 +19,7 @@
     "@rjsf/core": "^5.18.2",
     "@tremor/react": "^3.16.1",
     "chart.js": "^4.4.2",
+    "formik": "^2.4.6",
     "json-server": "^1.0.0-alpha.23",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
@@ -30,7 +31,8 @@
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.22.3",
     "react-toastify": "^10.0.5",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",

@@ -47,7 +47,7 @@ export const Navbar = () => {
   return (
     <>
 
-      <div className="navbar bg-white border-b-2 text-colorSec fixed z-50 p-4  shadow">
+      <div className="fixed navbar bg-white border-b-2 text-colorSec z-50 p-4  shadow">
         <div className="navbar-start">
           <Link to={'/'}> <button className="text-red-600 font-bold text-3xl"> El Buen Sabor</button></Link>
         </div>
@@ -81,7 +81,9 @@ export const Navbar = () => {
                   <span className="badge">New</span>
                 </a>
               </li>
-              <li><a>Logout</a></li>
+              <li>
+                <Link to={"/"}>Logout</Link>
+                </li>
             </ul>
           </div>
         </div>

@@ -1,7 +1,9 @@
 import { CarritoContextProvider } from "../../context/CarritoContext";
-import SucursalContext, { SucursalContextProvider } from "../../context/SucursalContext";
+import { SucursalContextProvider } from "../../context/SucursalContext";
 import { Carrito } from "../pages/Carrito/Carrito";
 import { Home } from "../pages/Home/Home";
+import { Login } from "../pages/Login/Login";
+import { Register } from "../pages/Register/Register";
 import SucursalInicio from "../pages/Sucursal/SucursalInicio";
 import Tienda from "../pages/Tienda/Tienda";
 import { Navbar } from "../ui/Navbar/Navbar";
@@ -15,7 +17,7 @@ const AppRouter = () => {
         <CarritoContextProvider>
           <Navbar />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/inicio" element={<Home />} />
             <Route path="/carrito" element={<Carrito />}></Route>
             <Route
               path="/:idEmpresa/sucursales"
@@ -25,6 +27,8 @@ const AppRouter = () => {
               path="/:idEmpresa/sucursales/categorias/:idSucursal"
               element={<Tienda />}
             />
+            <Route path="/registrarse" element={<Register/>}></Route>
+            <Route path="/" element={<Login/>}></Route>
           </Routes>
         </CarritoContextProvider>
         </SucursalContextProvider>
