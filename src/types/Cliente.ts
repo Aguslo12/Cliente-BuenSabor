@@ -11,7 +11,7 @@ export interface ICliente {
     telefono: number
     email: string
     usuario: IUsuario
-    imagen: IImagen
+    imagenCliente: IImagen
     domicilios: IDomicilio[]
     pedidos: IPedido[]
 }

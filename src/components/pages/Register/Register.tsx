@@ -6,10 +6,12 @@ import { IUsuario } from "../../../types/Usuario";
 import { BackendMethods } from "../../../services/BackendClient";
 import { ILocalidad } from "../../../types/Domicilio/Localidad";
 import { IProvincia } from "../../../types/Domicilio/Provincia";
+import { validationRegister } from "../../validations/RegisterValidation";
+import { ICliente } from "../../../types/Cliente";
+import ImageInput from "../../ui/Forms/Inputs/ImageInput";
 
 export const Register = () => {
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
-  const [data, setData] = useState<IUsuario[]>([]);
   const [actualizacion, setActualizacion] = useState(false);
   const [nombreUsado, setNombreUsado] = useState(false);
   const [usuarios, setUsuarios] = useState<IUsuario[]>([]);
@@ -24,6 +26,26 @@ export const Register = () => {
 
   const [selectedLocalidad, setSelectedLocalidad] = useState<ILocalidad>();
 
+  type FormState = {
+    [key: string]: any;
+    id: number;
+    eliminado: boolean;
+    nombre: string;
+    apellido: string;
+    telefono: number;
+    email: string;
+    usuario: {
+      id: number;
+      eliminado: boolean;
+      auth0Id: string;
+      userName: string;
+    };
+    domicilios: [];
+    pedidos: [];
+  };
+
+  type FileWithPreview = File & { preview: string };
+  /*
   //Effect para traer las provincias de Argentina
   useEffect(() => {
     const provincias = async () => {
@@ -121,7 +143,7 @@ export const Register = () => {
       </div>
     );
   };
-
+  */
   const backend = new BackendMethods();
 
   useEffect(() => {
@@ -148,13 +170,26 @@ export const Register = () => {
     }, 3000);
   };
 
-  const enviarUsuario = async (usuario: IUsuario) => {
-    const usuarioEncontrado = data.find(
-      (actual: IUsuario) => actual.userName === usuario.userName
+  const enviarUsuario = async (cliente: FormState) => {
+    console.log("ASDASDASSDASDASDASDSDASASDASSDSSDAS");
+    const usuarioConMismoNombre = usuarios.find(
+      (actual: IUsuario) => actual.userName === cliente.usuario.userName
     );
-    if (usuarioEncontrado) {
+    if (usuarioConMismoNombre) {
       mostrarUsadoONo();
     } else {
+      try {
+        console.log("HOLA");
+        console.log(cliente);
+        const res: ICliente = await backend.post(
+          `${import.meta.env.VITE_LOCAL}cliente`,
+          cliente
+        );
+        console.log("CHAU");
+        console.log(res);
+      } catch (error) {
+        console.error(error);
+      }
       mostrarYEsconderAlerta();
       setActualizacion(!actualizacion);
     }
@@ -175,13 +210,19 @@ export const Register = () => {
         <Formik
           initialValues={{
             id: 0,
-            userName: "",
-            auth0Id: "",
-            rol: "cliente",
+            eliminado: false,
             nombre: "",
             apellido: "",
-            telefono: "",
+            telefono: 0,
             email: "",
+            usuario: {
+              id: 0,
+              eliminado: false,
+              auth0Id: "",
+              userName: "",
+            },
+            domicilios: [],
+            pedidos: [],
           }}
           onSubmit={enviarUsuario}
           validationSchema={schema} // Pasar el esquema de validación
@@ -200,15 +241,15 @@ export const Register = () => {
                       Usuario
                       <Field
                         id="userName"
-                        name="userName"
+                        name="usuario.userName"
                         type="text"
                         className="grow font-normal text-black"
                         placeholder=""
                       />
                     </label>
-                    {errors.userName && touched.userName && (
+                    {errors.usuario?.userName && touched.usuario?.userName && (
                       <div className="pl-2 text-red-500 font-normal text-left text-sm">
-                        {errors.userName}
+                        {errors.usuario?.userName}
                       </div>
                     )}
                   </div>
@@ -218,15 +259,15 @@ export const Register = () => {
                       Contraseña
                       <Field
                         id="auth0Id"
-                        name="auth0Id"
+                        name="usuario.auth0Id"
                         type="password"
                         className="grow text-black"
                         placeholder=""
                       />
                     </label>
-                    {errors.auth0Id && touched.auth0Id && (
+                    {errors.usuario?.auth0Id && touched.usuario?.auth0Id && (
                       <div className="pl-2 text-red-500 font-normal text-left text-sm">
-                        {errors.auth0Id}
+                        {errors.usuario.auth0Id}
                       </div>
                     )}
                   </div>
@@ -304,7 +345,7 @@ export const Register = () => {
                     )}
                   </div>
                 </div>
-
+                <div className="w-full flex justify-center "></div>
                 <button
                   type="submit"
                   className="btn btn-outline w-full text-xl font-light text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90"

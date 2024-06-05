@@ -6,11 +6,13 @@ import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { IUsuario } from "../../../types/Usuario";
 import { BackendMethods } from "../../../services/BackendClient";
+import { useSucursalContext } from "../../../hooks/useContext";
 
 export const Login = () => {
   const navigate = useNavigate();
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const [data, setData] = useState<IUsuario[]>([]);
+  const { getCliente } = useSucursalContext();
 
   const backend = new BackendMethods();
 
@@ -43,17 +45,11 @@ export const Login = () => {
   });
 
   const verificarUsuario = async (usuario: IUsuario) => {
-    console.log(usuario)
     const inputHash = usuario.auth0Id;
-    console.log("CONTRASEÑA DE USUARIO")
-    console.log(inputHash)
-    console.log("LA DATA")
-    console.log(data)
     const usuarioEncontrado = data.find(
       (actual: IUsuario) => actual.userName == usuario.userName
     );
-    console.log("EL USUARIO")
-    console.log(usuarioEncontrado)
+    getCliente(usuarioEncontrado?.id)
     if (usuarioEncontrado) {
       const storedHash = usuarioEncontrado.auth0Id;
       if (inputHash === storedHash) {
