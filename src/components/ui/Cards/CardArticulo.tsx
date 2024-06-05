@@ -56,7 +56,7 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
 
   const eliminar = () => {
     if (data) {
-      const detalle: IDetallePedido = { id: 0, cantidad, articulo: data , subTotal: data.precioVenta};
+      const detalle: IDetallePedido = { id: 0, cantidad, articulo: data, subTotal: data.precioVenta };
       removeItemCarrito(detalle);
       if (cantidad > 0) {
         setCantidad(prevCantidad => prevCantidad - 1);
@@ -65,30 +65,45 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
   };
 
   return (
-    <div className="card w-96 bg-base-100 rounded-xl border m-5">
+    <div className="card w-96 bg-base-100 rounded-md border m-5">
       {imagenes !== undefined && imagenes.length >= 1 && (
         <figure>
-          <img src={imagenes[0].url} alt="promo" />
+          <img src={imagenes[0].url} alt="promo" className="w-full" />
         </figure>
       )}
-      <div className="card-body">
-        <h2 className="card-title">{denominacion}</h2>
-        <p>{tiempoEstimadoMinutos}</p>
-        <p className="text-red-600 font-bold">${precioVenta}</p>
-        <div className="justify-end items-end m-3 flex">
-          <button className="btn btn-error rounded-l-xl rounded-r-none ml-3 text-gray-800 text-sm disabled:bg-red-300 disabled:text-slate-300"
-          onClick={eliminar} disabled={cantidad === 0}>
-            <FaMinus />
-          </button>
-          <h1 className="bg-custom-green h-12 p-2 items-center flex font-medium text-2xl w-14 justify-center text-gray-800">
+      <div className="">
+        <div className="flex flex-col mt-2 justify-center items-center">
+          <h2 className="card-title text-3xl">{denominacion}</h2>
+          <p>{tiempoEstimadoMinutos}</p>
+          <p className="text-red-600 font-bold">${precioVenta}</p>
+        </div>
+
+
+        {/*FUNCIONALIDADES */}
+        <div className="w-full flex items-center justify-between">
+          <div className="justify-end items-end m-3 flex w-min border rounded-xl ">
+            <button className="btn bg-white hover:bg-white text-red-600 bg-red-600 border-none rounded-l-xl rounded-r-none  text-sm disabled:bg-white disabled:text-slate-300"
+              onClick={eliminar} disabled={cantidad === 0}>
+              <FaMinus className="bg-white" />
+            </button>
+
+            <button
+              className="btn bg-white hover:bg-white text-red-600 border-none rounded-l-xl rounded-r-none  text-sm disabled:bg-white disabled:text-slate-300"
+              onClick={agregar}
+            >
+              <FaPlus />
+            </button>
+          </div>
+          {/* <h1 className="bg-custom-green h-12 p-2 items-center flex font-medium text-2xl w-14 justify-center text-gray-800">
             <BsFillCartFill />
-          </h1>
-          <button
-            className="btn btn-success rounded-r-xl rounded-l-none text-gray-800 text-sm"
-            onClick={agregar}
-          >
-            <FaPlus />
-          </button>
+          </h1> */}
+          <div>
+            <div className={`bg-custom-green m-2  items-center flex flex-row font-medium text-2xl  justify-center transition-all
+            ${cantidad >= 1 ? 'text-red-600 ' : 'text-gray-600 '}`}>
+              <BsFillCartFill className="text-2xl mx-2" />
+              <h1 className={`w-8 ${cantidad >= 1 || 'opacity-0'}`}>{cantidad}</h1>
+            </div>
+          </div>
         </div>
       </div>
     </div>

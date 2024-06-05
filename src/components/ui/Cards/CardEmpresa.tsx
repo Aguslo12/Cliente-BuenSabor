@@ -2,19 +2,25 @@ import { FC } from "react";
 import { IEmpresaShort } from "../../../types/ShortDtos/EmpresaShort";
 import { FaAngleRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../hooks/redux";
+import { setIdEmpresa } from "../../../redux/slices/idEmpresa";
 
 export const CardEmpresa: FC<IEmpresaShort> = ({ nombre, imagenes, id }) => {
 
   const navigate = useNavigate();
 
+  const dispatch = useAppDispatch();
+
   function pushCard(nombre: string) {
+
+    dispatch(setIdEmpresa(String(id)))
     const idEmpresa = id;
     navigate(`/${idEmpresa}/sucursales`, { state: { nombre } })
   }
 
   return (
     <>
-      <a className="bg-white border group transition-all hover:scale-105 rounded-md cursor-pointer mx-4 overflow-hidden size-40 w-72" onClick={() => pushCard(nombre)}>
+      <div className="bg-white  group transition-all hover:scale-105 rounded-md cursor-pointer  overflow-hidden size-40 w-72 m-2 " onClick={() => pushCard(nombre)}>
         <div className="">
           {imagenes.map((foto) => (
             <img src={foto.url} alt={foto.name} className="h-28 w-full" />
@@ -28,7 +34,7 @@ export const CardEmpresa: FC<IEmpresaShort> = ({ nombre, imagenes, id }) => {
             <FaAngleRight />
           </p>
         </div>
-      </a>
+      </div>
     </>
   );
 };

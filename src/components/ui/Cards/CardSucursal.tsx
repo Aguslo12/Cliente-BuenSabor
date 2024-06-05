@@ -3,6 +3,8 @@ import { ISucursalShort } from "../../../types/ShortDtos/SucursalShort";
 import { Link } from "react-router-dom";
 import { FaAngleRight } from "react-icons/fa";
 import { useSucursalContext } from "../../../hooks/useContext";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { setGlobalSucursal } from "../../../redux/slices/globalSucursal";
 
 const CardSucursal: FC<ISucursalShort> = ({
   domicilio,
@@ -18,8 +20,14 @@ const CardSucursal: FC<ISucursalShort> = ({
 
   const { updateSucursal } = useSucursalContext();
 
+  const selectedIdSucursal = useAppSelector((state) => state.GlobalSucursal.selected)
+
+  const dispatch = useAppDispatch();
 
   const actualizar = () => {
+
+    dispatch(setGlobalSucursal(id))
+
     const detalle: ISucursalShort = {
       id: id,
       domicilio: domicilio,
@@ -38,8 +46,10 @@ const CardSucursal: FC<ISucursalShort> = ({
 
   return (
     <>
+
+
       <Link
-        className="bg-white shadow-md border hover:border rounded-md hover:border-black mx-4 overflow-hidden size-40 w-72"
+        className="bg-white  group transition-all hover:scale-105 rounded-md cursor-pointer  overflow-hidden size-40 w-72 m-5 shadow-md "
         to={`categorias/${id}`}
         onClick={actualizar}
       >
@@ -53,7 +63,7 @@ const CardSucursal: FC<ISucursalShort> = ({
             {nombre}
           </h1>
           <p className="flex text-right items-center p-3">
-            <FaAngleRight/>
+            <FaAngleRight />
           </p>
         </div>
       </Link>
