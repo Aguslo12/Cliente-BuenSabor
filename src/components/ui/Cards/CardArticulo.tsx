@@ -45,6 +45,7 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
     if (data) {
       const detalle: IDetallePedido = {
         id: 0,
+        eliminado: false,
         cantidad: 1,
         articulo: data,
         subTotal: data.precioVenta,
@@ -56,7 +57,7 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
 
   const eliminar = () => {
     if (data) {
-      const detalle: IDetallePedido = { id: 0, cantidad, articulo: data, subTotal: data.precioVenta };
+      const detalle: IDetallePedido = { id: 0, cantidad, eliminado:false, articulo: data, subTotal: data.precioVenta };
       removeItemCarrito(detalle);
       if (cantidad > 0) {
         setCantidad(prevCantidad => prevCantidad - 1);
@@ -82,7 +83,7 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
         {/*FUNCIONALIDADES */}
         <div className="w-full flex items-center justify-between">
           <div className="justify-end items-end m-3 flex w-min border rounded-xl ">
-            <button className="btn bg-white hover:bg-white text-red-600 bg-red-600 border-none rounded-l-xl rounded-r-none  text-sm disabled:bg-white disabled:text-slate-300"
+            <button className="btn bg-white hover:bg-white text-red-600  border-none rounded-l-xl rounded-r-none  text-sm disabled:bg-white disabled:text-slate-300"
               onClick={eliminar} disabled={cantidad === 0}>
               <FaMinus className="bg-white" />
             </button>

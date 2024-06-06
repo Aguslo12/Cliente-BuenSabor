@@ -5,14 +5,18 @@ import { BackendMethods } from "../../../services/BackendClient";
 import { IDomicilio } from "../../../types/Domicilio/Domicilio";
 import { ISucursalShort } from "../../../types/ShortDtos/SucursalShort";
 import { IDetallePedidoIdArt } from "../../../types/DetallePedidoIdArt";
+import { ICliente } from "../../../types/Cliente";
+import { string } from "yup";
+import { IFactura } from "../../../types/Factura";
+import { IHoraEstimadaFinalizacion } from "../../../types/HoraEstimadaFinalizacion";
+import { IEmpleado } from "../../../types/Empleado";
+import { IDomicilioDto } from "../../../types/CreateDtos/DomicilioDto";
 
 export const ContainerCarrito = () => {
   const { cart } = useCarrito();
   const backend = new BackendMethods();
-  const { suc, pedidoEnviado } = useSucursalContext();
-
-  console.log(`ESTO ES LA SUCURSAL`);
-  console.log(suc);
+  const { suc, pedidoEnviado, clienteId } = useSucursalContext();
+  const [cliente, setCliente] = useState<number | undefined>(0);
 
   type FormState = {
     [key: string]: any;
@@ -22,8 +26,15 @@ export const ContainerCarrito = () => {
     total: number;
     estado: string;
     tipoEnvio: string;
-    domicilio: IDomicilio | null;
-    sucursal: ISucursalShort | null;
+    idCliente: number | undefined;
+    domicilio: IDomicilioDto | null;
+    idSucursal: number | undefined;
+    factura: IFactura | null;
+    formaPago: string;
+    fechaPedido: string | null;
+    horaEstimadaFinalizacion: IHoraEstimadaFinalizacion | null;
+    totalCosto: number;
+    empleado: IEmpleado | null;
   };
 
   const calcularTotalProductos = () => {
@@ -33,10 +44,7 @@ export const ContainerCarrito = () => {
     );
   };
 
-  const hardcodedDomicilio: IDomicilio = {
-    id: 1,
-    nombre: "Casa",
-    eliminado: false,
+  const hardcodedDomicilio: IDomicilioDto = {
     calle: "Calle Falsa",
     numero: 123,
     cp: 1234,
@@ -45,21 +53,64 @@ export const ContainerCarrito = () => {
     idLocalidad: 1,
   };
 
+  const facturaHardcodeada: IFactura = {
+    id: 1,
+    eliminado: false,
+    fechaFacturacion: null, // Fecha en formato ISO
+    mpPaymentId: 123456789,
+    mpMerchantOrderId: 987654321,
+    mpPreferenceId: "abcdefg12345",
+    mpPaymentType: "credit_card",
+    formaPago: "MERCADO_PAGO",
+    totalVenta: 1500.0,
+  };
+
+  useEffect(() => {
+    const traerClientes = async () => {
+      const res: ICliente[] = (await backend.getAll(
+        `${import.meta.env.VITE_LOCAL}cliente`
+      )) as ICliente[];
+      console.log("LOS CLIENTES");
+      console.log(res);
+      await traerCliente(res);
+    };
+    traerClientes();
+  }, []);
+
+  const traerCliente = async (res: ICliente[]) => {
+    const usuarioEncontrado = res.find(
+      (actual: ICliente) => actual.usuario.id == clienteId
+    );
+    setCliente(usuarioEncontrado?.id);
+    console.log("CLIENTEEEEEE");
+    console.log(usuarioEncontrado);
+  };
+
   const [formState, setFormState] = useState<FormState>({
     id: 0,
     detallesPedido: cart.map(
       (item) =>
         ({
+          id: item.id,
+          eliminado: item.eliminado,
+          subTotal: item.subTotal,
           cantidad: item.cantidad,
           idArticulo: item.articulo.id,
         } as unknown as IDetallePedidoIdArt)
     ),
+    fechaPedido: null,
+    idCliente: cliente,
     eliminado: false,
     total: calcularTotalProductos(),
+    formaPago: "EFECTIVO",
     estado: "PREPARACION",
     tipoEnvio: "DELIVERY",
     domicilio: hardcodedDomicilio,
-    sucursal: suc,
+    factura: facturaHardcodeada,
+    idSucursal: suc?.id,
+    horaEstimadaFinalizacion: null,
+    empleado: null,
+    totalCosto: 0,
   });
 
   useEffect(() => {
@@ -68,17 +119,22 @@ export const ContainerCarrito = () => {
       detallesPedido: cart.map(
         (item) =>
           ({
-            cantidad: item.cantidad,
-            idArticulo: item.articulo.id,
+            id: item.id,
+          eliminado: item.eliminado,
+          subTotal: item.subTotal,
+          cantidad: item.cantidad,
+          idArticulo: item.articulo.id,
           } as unknown as IDetallePedidoIdArt)
       ),
       total: calcularTotalProductos(),
-      
+      idCliente: cliente,
     }));
-  }, [cart]);
+  }, [cart, cliente]);
 
   const postPedido = async () => {
     try {
+      console.log("ESTE ES EL PEDIDO URA");
+      console.log(formState);
       const res: IPedido = await backend.post(
         `${import.meta.env.VITE_LOCAL}pedido`,
         formState

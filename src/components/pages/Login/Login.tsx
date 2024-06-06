@@ -2,7 +2,6 @@ import { Field, Form, Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-
 import * as Yup from "yup";
 import { IUsuario } from "../../../types/Usuario";
 import { BackendMethods } from "../../../services/BackendClient";
@@ -25,19 +24,20 @@ export const Login = () => {
 
   useEffect(() => {
     const traerCategorias = async () => {
-        const res: IUsuario[] = await backend.getAll(`${import.meta.env.VITE_LOCAL}usuarioCliente`) as IUsuario[]
-        setData(res);
-        console.log("LOS USUARIOS")
-        console.log(res)
-    }
-    traerCategorias()
-}, [])
+      const res: IUsuario[] = (await backend.getAll(
+        `${import.meta.env.VITE_LOCAL}usuarioCliente`
+      )) as IUsuario[];
+      setData(res);
+      console.log("LOS USUARIOS");
+      console.log(res);
+    };
+    traerCategorias();
+  }, []);
 
   const [jsonUsuario, setJSONUsuario] = useState<any>(
     localStorage.getItem("usuario")
   );
   const usuarioLogueado: IUsuario = JSON.parse(jsonUsuario) as IUsuario;
-
 
   const schema = Yup.object().shape({
     userName: Yup.string().required("El nombre de usuario es obligatorio"),
@@ -49,7 +49,9 @@ export const Login = () => {
     const usuarioEncontrado = data.find(
       (actual: IUsuario) => actual.userName == usuario.userName
     );
-    getCliente(usuarioEncontrado?.id)
+    console.log("EL USUARIO ENCONTRADO");
+    console.log(usuarioEncontrado);
+    getCliente(usuarioEncontrado?.id);
     if (usuarioEncontrado) {
       const storedHash = usuarioEncontrado.auth0Id;
       if (inputHash === storedHash) {
@@ -57,8 +59,7 @@ export const Login = () => {
           "usuario",
           JSON.stringify(
             data.find(
-              (actual: IUsuario) =>
-                actual.userName === usuario.userName
+              (actual: IUsuario) => actual.userName === usuario.userName
             )
           )
         );
@@ -129,7 +130,7 @@ export const Login = () => {
                     {errors.auth0Id}
                   </div>
                 )}
-                
+
                 <button
                   type="submit"
                   className="btn btn-outline text-xl font-light text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-full"
@@ -151,7 +152,9 @@ export const Login = () => {
                         d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span className="text-white">Error! Usuario no encontrado.</span>
+                    <span className="text-white">
+                      Error! Usuario no encontrado.
+                    </span>
                   </div>
                 )}
               </div>
