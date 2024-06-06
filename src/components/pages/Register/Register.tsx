@@ -45,105 +45,7 @@ export const Register = () => {
   };
 
   type FileWithPreview = File & { preview: string };
-  /*
-  //Effect para traer las provincias de Argentina
-  useEffect(() => {
-    const provincias = async () => {
-      try {
-        const res: IProvincia[] = await backend.getAll(
-          `${import.meta.env.VITE_LOCAL}provincia`
-        );
-        setProvincias(res);
-        console.log(res);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    provincias();
-  }, []);
-
-  //Effect para traer las localidades de la provincia seleccionada
-  useEffect(() => {
-    const localidades = async () => {
-      try {
-        const res: ILocalidad[] = await backend.getAll(
-          `${import.meta.env.VITE_LOCAL}localidad/findByProvincia/${
-            selectedProvincia?.id
-          }`
-        );
-        setLocalidades(res);
-        console.log(res);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    localidades();
-  }, [selectedProvincia]);
-
-  const provinciaInput = () => {
-    return (
-      <div className="w-full">
-        <div className="font-Roboto text-xl mt-2 w-full ">
-          Provincias disponibles:{" "}
-        </div>
-        <select
-          className=" border rounded-md w-full"
-          id="provincia"
-          name="provincia"
-          value={selectedProvincia?.nombre || ""}
-          onChange={(e) => {
-            const selectedValue = e.target.value;
-            const selectedProvincia = provincias.find(
-              (provincia) => provincia.nombre === selectedValue
-            );
-            setSelectedProvincia(selectedProvincia);
-          }}
-        >
-          {provincias.map((provincia, index) => (
-            <option
-              key={index}
-              value={provincia.nombre}
-              className="rounded-full hover:bg-red-600"
-            >
-              {provincia.nombre}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  };
-
-  const localidadInput = () => {
-    return (
-      <div className="w-full">
-        <div className="font-Roboto text-xl mt-2 w-full">
-          Localidades disponibles:{" "}
-        </div>
-        <select
-          className=" border rounded-md w-full"
-          id="localidad"
-          name="localidad"
-          value={selectedLocalidad?.nombre || ""}
-          onChange={(e) => {
-            {
-              const selectedValue = e.target.value;
-              const selectedLocalidad = localidades.find(
-                (localidad) => localidad.nombre === selectedValue
-              );
-              setSelectedLocalidad(selectedLocalidad);
-            }
-          }}
-        >
-          {localidades.map((localidad, index) => (
-            <option key={index} value={localidad.nombre} className="">
-              {localidad.nombre}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  };
-  */
+ 
   const backend = new BackendMethods();
 
   useEffect(() => {
@@ -171,22 +73,20 @@ export const Register = () => {
   };
 
   const enviarUsuario = async (cliente: FormState) => {
-    console.log("ASDASDASSDASDASDASDSDASASDASSDSSDAS");
+    console.log("Formulario enviado", cliente);
     const usuarioConMismoNombre = usuarios.find(
       (actual: IUsuario) => actual.userName === cliente.usuario.userName
     );
+    console.log(usuarioConMismoNombre)
     if (usuarioConMismoNombre) {
       mostrarUsadoONo();
     } else {
       try {
-        console.log("HOLA");
-        console.log(cliente);
         const res: ICliente = await backend.post(
           `${import.meta.env.VITE_LOCAL}cliente`,
           cliente
         );
-        console.log("CHAU");
-        console.log(res);
+        console.log("Usuario registrado", res);
       } catch (error) {
         console.error(error);
       }
@@ -196,24 +96,26 @@ export const Register = () => {
   };
 
   const schema = Yup.object().shape({
-    userName: Yup.string().required("El nombre de usuario es obligatorio"),
-    auth0Id: Yup.string().required("La contraseña es obligatoria"),
     nombre: Yup.string().required("El nombre es obligatorio."),
     apellido: Yup.string().required("El apellido es obligatorio."),
-    email: Yup.string().required("El email es obligatorio."),
     telefono: Yup.string().required("El teléfono es obligatorio."),
+    email: Yup.string().email("Debe introducir una dirección de correo electrónico válida.").required("El email es obligatorio."),
+    usuario: Yup.object().shape({
+      userName: Yup.string().required("El nombre de usuario es obligatorio"),
+      auth0Id: Yup.string().required("La contraseña es obligatoria")
+    })
   });
 
   return (
     <div className="bg-[#bc4749] h-screen flex items-center justify-center relative z-50">
       <div className="bg-white border-red-500 border-[1px] card w-auto shadow-lg">
-        <Formik
+      <Formik
           initialValues={{
             id: 0,
             eliminado: false,
             nombre: "",
             apellido: "",
-            telefono: 0,
+            telefono: "",
             email: "",
             usuario: {
               id: 0,
@@ -225,11 +127,9 @@ export const Register = () => {
             pedidos: [],
           }}
           onSubmit={enviarUsuario}
-          validationSchema={schema} // Pasar el esquema de validación
+          validationSchema={schema}
         >
-          {(
-            { errors, touched } // Obtener los errores y el estado de toque de los campos del formulario
-          ) => (
+          {({ errors, touched }) => (
             <Form className="card-body">
               <h1 className="card-title flex justify-center text-3xl font-extralight text-red-500/90 mb-5">
                 Registrarse
@@ -237,7 +137,7 @@ export const Register = () => {
               <div className="space-y-5 text-red-500/90">
                 <div className="flex flex-row space-x-5">
                   <div>
-                    <label className=" italic input input-bordered border-slate-700 hover:border-red-500/90 flex items-center font-normal  gap-3">
+                    <label className="italic input input-bordered border-slate-700 hover:border-red-500/90 flex items-center font-normal gap-3">
                       Usuario
                       <Field
                         id="userName"
@@ -396,7 +296,7 @@ export const Register = () => {
                   </div>
                 )}
               </div>
-              <Link to={"/"} className=" w-20">
+              <Link to={"/iniciarSesion"} className=" w-20">
                 <button className="text-left font-normal ml-1 mt-2 hover:underline text-red-500/90">
                   Iniciar Sesión
                 </button>

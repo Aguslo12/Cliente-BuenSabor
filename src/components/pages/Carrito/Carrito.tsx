@@ -33,6 +33,18 @@ export const Carrito = () => {
         theme: "colored",
         transition: Bounce,
       });
+    } else if (str === 3) {
+      toast.error("Pedido rechazado por: {Falta de stock}", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     }
     pedidoEnviado(0);
   }, [str]);

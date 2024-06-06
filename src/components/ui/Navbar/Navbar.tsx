@@ -1,17 +1,17 @@
-import { Link, useParams } from "react-router-dom";
-import { Button } from "./Button";
-
+import { Link } from "react-router-dom";
 import { ButtonCarrito } from "./ButtonCarrito";
 import { useEffect, useState } from "react";
-import { ISucursalShort } from "../../../types/ShortDtos/SucursalShort";
 import { ISucursal } from "../../../types/Sucursal";
 import { IEmpresa } from "../../../types/Empresa";
 import { BackendMethods } from "../../../services/BackendClient";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { setGlobalSucursal } from "../../../redux/slices/globalSucursal";
+import { useSucursalContext } from "../../../hooks/useContext";
 
 export const Navbar = () => {
 
+  const { usuario } = useSucursalContext()
+  
 
   const backend = new BackendMethods();
 
@@ -39,6 +39,10 @@ export const Navbar = () => {
   }, [categoria])
 
 
+  const desLoguearte = () => {
+    sessionStorage.removeItem('usuario')
+  }
+
   const selectSucursal = (id: number) => {
     dispatch(setGlobalSucursal(id))
   }
@@ -65,27 +69,31 @@ export const Navbar = () => {
           </>
         }
 
-
-        <div className="navbar-end mr-2">
+        <div className="navbar-end mr-3">
           <ButtonCarrito />
-          <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-              <div className="w-10 rounded-full">
-                <img alt="Tailwind CSS Navbar component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+          { sessionStorage.getItem('usuario') ? (
+              <div className="ml-3 dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                <div className="w-10 rounded-full">
+                  <img alt="Tailwind CSS Navbar component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                </div>
               </div>
-            </div>
-            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-              <li>
-                <a className="justify-between">
-                  Perfil
-                  <span className="badge">New</span>
-                </a>
-              </li>
-              <li>
-                <Link to={"/"}>Logout</Link>
+              
+              <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                <li>
+                  <a className="justify-between">
+                    Usuario
+                    <span className="badge badge-primary">{usuario?.userName}</span>
+                  </a>
                 </li>
-            </ul>
-          </div>
+                <li>
+                  <Link to={"/iniciarSesion"} onClick={desLoguearte} className="flex justify-center bg-red-500 text-white hover:bg-white hover:text-red-500/80 mt-3 p-1 hover:border-red-500 border-[1px]">Cerrar Sesión</Link>
+                  </li>
+              </ul>
+            </div>
+            ) : (
+              <div></div>
+            )}
         </div>
       </div >
 

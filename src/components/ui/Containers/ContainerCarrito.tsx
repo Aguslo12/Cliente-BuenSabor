@@ -2,21 +2,22 @@ import { useEffect, useState } from "react";
 import { useCarrito, useSucursalContext } from "../../../hooks/useContext";
 import { IPedido } from "../../../types/Pedidos";
 import { BackendMethods } from "../../../services/BackendClient";
-import { IDomicilio } from "../../../types/Domicilio/Domicilio";
-import { ISucursalShort } from "../../../types/ShortDtos/SucursalShort";
 import { IDetallePedidoIdArt } from "../../../types/DetallePedidoIdArt";
 import { ICliente } from "../../../types/Cliente";
-import { string } from "yup";
 import { IFactura } from "../../../types/Factura";
 import { IHoraEstimadaFinalizacion } from "../../../types/HoraEstimadaFinalizacion";
 import { IEmpleado } from "../../../types/Empleado";
 import { IDomicilioDto } from "../../../types/CreateDtos/DomicilioDto";
 
 export const ContainerCarrito = () => {
-  const { cart } = useCarrito();
+  const { cart, limpiarCarrito } = useCarrito();
   const backend = new BackendMethods();
-  const { suc, pedidoEnviado, clienteId } = useSucursalContext();
-  const [cliente, setCliente] = useState<number | undefined>(0);
+  const { suc, pedidoEnviado, usuario } = useSucursalContext();
+  const [idCliente, setCliente] = useState<number | undefined>(0);
+
+  function eliminarTodo() {
+    limpiarCarrito();
+  }
 
   type FormState = {
     [key: string]: any;
@@ -54,7 +55,7 @@ export const ContainerCarrito = () => {
   };
 
   const facturaHardcodeada: IFactura = {
-    id: 1,
+    id: 0,
     eliminado: false,
     fechaFacturacion: null, // Fecha en formato ISO
     mpPaymentId: 123456789,
@@ -79,11 +80,10 @@ export const ContainerCarrito = () => {
 
   const traerCliente = async (res: ICliente[]) => {
     const usuarioEncontrado = res.find(
-      (actual: ICliente) => actual.usuario.id == clienteId
+      (actual: ICliente) => actual.usuario.id == usuario?.id
     );
     setCliente(usuarioEncontrado?.id);
-    console.log("CLIENTEEEEEE");
-    console.log(usuarioEncontrado);
+    
   };
 
   const [formState, setFormState] = useState<FormState>({
@@ -99,7 +99,7 @@ export const ContainerCarrito = () => {
         } as unknown as IDetallePedidoIdArt)
     ),
     fechaPedido: null,
-    idCliente: cliente,
+    idCliente: idCliente,
     eliminado: false,
     total: calcularTotalProductos(),
     formaPago: "EFECTIVO",
@@ -127,19 +127,24 @@ export const ContainerCarrito = () => {
           } as unknown as IDetallePedidoIdArt)
       ),
       total: calcularTotalProductos(),
-      idCliente: cliente,
+      idCliente: idCliente,
     }));
-  }, [cart, cliente]);
+  }, [cart, idCliente]);
 
   const postPedido = async () => {
     try {
-      console.log("ESTE ES EL PEDIDO URA");
-      console.log(formState);
       const res: IPedido = await backend.post(
         `${import.meta.env.VITE_LOCAL}pedido`,
         formState
       );
-      pedidoEnviado(1);
+      console.log("PEDIDO")
+      console.log(res)
+      if (res.estado === "RECHAZADO") {
+        pedidoEnviado(3);
+      } else {
+        pedidoEnviado(1);
+        eliminarTodo();
+      }
     } catch (error) {
       console.error("Error posting pedido:", error);
       pedidoEnviado(2);

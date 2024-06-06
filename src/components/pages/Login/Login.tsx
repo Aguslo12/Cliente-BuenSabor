@@ -11,7 +11,7 @@ export const Login = () => {
   const navigate = useNavigate();
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const [data, setData] = useState<IUsuario[]>([]);
-  const { getCliente } = useSucursalContext();
+  const { getUsuario } = useSucursalContext();
 
   const backend = new BackendMethods();
 
@@ -28,14 +28,12 @@ export const Login = () => {
         `${import.meta.env.VITE_LOCAL}usuarioCliente`
       )) as IUsuario[];
       setData(res);
-      console.log("LOS USUARIOS");
-      console.log(res);
     };
     traerCategorias();
   }, []);
 
   const [jsonUsuario, setJSONUsuario] = useState<any>(
-    localStorage.getItem("usuario")
+    sessionStorage.getItem("usuario")
   );
   const usuarioLogueado: IUsuario = JSON.parse(jsonUsuario) as IUsuario;
 
@@ -49,13 +47,12 @@ export const Login = () => {
     const usuarioEncontrado = data.find(
       (actual: IUsuario) => actual.userName == usuario.userName
     );
-    console.log("EL USUARIO ENCONTRADO");
-    console.log(usuarioEncontrado);
-    getCliente(usuarioEncontrado?.id);
+    getUsuario(usuarioEncontrado);
+    sessionStorage.setItem('usuario', JSON.stringify(usuarioEncontrado))
     if (usuarioEncontrado) {
       const storedHash = usuarioEncontrado.auth0Id;
       if (inputHash === storedHash) {
-        localStorage.setItem(
+        sessionStorage.setItem(
           "usuario",
           JSON.stringify(
             data.find(
@@ -63,7 +60,7 @@ export const Login = () => {
             )
           )
         );
-        navigate("/inicio", {
+        navigate("/", {
           replace: true,
           state: {
             logged: true,

@@ -17,7 +17,7 @@ const AppRouter = () => {
         <CarritoContextProvider>
           <Navbar />
           <Routes>
-            <Route path="/inicio" element={<Home />} />
+            <Route path="/" element={<Home />} />
             <Route path="/carrito" element={<Carrito />}></Route>
             <Route
               path="/:idEmpresa/sucursales"
@@ -28,7 +28,7 @@ const AppRouter = () => {
               element={<Tienda />}
             />
             <Route path="/registrarse" element={<Register/>}></Route>
-            <Route path="/" element={<Login/>}></Route>
+            <Route path="/iniciarSesion" element={<Login/>}></Route>
           </Routes>
         </CarritoContextProvider>
         </SucursalContextProvider>

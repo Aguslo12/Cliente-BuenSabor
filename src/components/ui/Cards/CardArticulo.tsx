@@ -66,7 +66,7 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
   };
 
   return (
-    <div className="card w-96 bg-base-100 rounded-md border m-5">
+    <div className="card w-96 bg-base-100 h-[390px] rounded-md border shadow m-5">
       {imagenes !== undefined && imagenes.length >= 1 && (
         <figure>
           <img src={imagenes[0].url} alt="promo" className="w-full" />
