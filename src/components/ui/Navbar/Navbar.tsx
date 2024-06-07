@@ -7,10 +7,11 @@ import { BackendMethods } from "../../../services/BackendClient";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { setGlobalSucursal } from "../../../redux/slices/globalSucursal";
 import { useSucursalContext } from "../../../hooks/useContext";
+import { IUsuario } from "../../../types/Usuario";
+import { FaUser } from "react-icons/fa";
+
 
 export const Navbar = () => {
-
-  const { usuario } = useSucursalContext()
   
 
   const backend = new BackendMethods();
@@ -24,6 +25,17 @@ export const Navbar = () => {
   const dispatch = useAppDispatch();
 
   const [sucursales, SetSucursales] = useState<ISucursal[]>([])
+
+  const desLoguearte = () => {
+    sessionStorage.removeItem('usuario')
+  }
+  const storedUsuario = sessionStorage.getItem('usuario');
+  let user: IUsuario | null = null;
+
+  if (storedUsuario) {
+    user = JSON.parse(storedUsuario) as IUsuario;
+  }
+
 
   useEffect(() => {
     const traerSucursales = async () => {
@@ -39,9 +51,6 @@ export const Navbar = () => {
   }, [categoria])
 
 
-  const desLoguearte = () => {
-    sessionStorage.removeItem('usuario')
-  }
 
   const selectSucursal = (id: number) => {
     dispatch(setGlobalSucursal(id))
@@ -74,8 +83,8 @@ export const Navbar = () => {
           { sessionStorage.getItem('usuario') ? (
               <div className="ml-3 dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                <div className="w-10 rounded-full">
-                  <img alt="Tailwind CSS Navbar component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                <div className="flex text-red-500 text-[40px] rounded-full border-red-500 border-[3px]">
+                  <p><FaUser /></p>
                 </div>
               </div>
               
@@ -83,7 +92,7 @@ export const Navbar = () => {
                 <li>
                   <a className="justify-between">
                     Usuario
-                    <span className="badge badge-primary">{usuario?.userName}</span>
+                    <span className="badge badge-primary">{user?.userName}</span>
                   </a>
                 </li>
                 <li>

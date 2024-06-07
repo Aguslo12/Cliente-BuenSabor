@@ -44,8 +44,6 @@ const CardArticuloInsumo: FC<IArticuloInsumo> = ({
         articulo: data,
         subTotal: data.precioVenta,
       };
-      console.log("ESTO SE ESTÁ GUARDANDO");
-      console.log(detalle);
       addCarrito(detalle);
       setCantidad((prevCantidad) => prevCantidad + 1);
     }

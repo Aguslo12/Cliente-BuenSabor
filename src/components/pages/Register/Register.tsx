@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, FormikHelpers } from "formik";
 import { ChangeEvent, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { IUsuario } from "../../../types/Usuario";
@@ -15,16 +15,9 @@ export const Register = () => {
   const [nombreUsado, setNombreUsado] = useState(false);
   const [usuarios, setUsuarios] = useState<IUsuario[]>([]);
 
-  //States para manejar las provincias
   const [provincias, setProvincias] = useState<IProvincia[]>([]);
-
-  const [selectedProvincia, setSelectedProvincia] = useState<IProvincia | null>();
-
-  //States para manejar las localidades
   const [localidades, setLocalidades] = useState<ILocalidad[]>([]);
-
-  const [selectedLocalidad, setSelectedLocalidad] = useState<ILocalidad>();
-
+  const [selectedProvincia, setSelectedProvincia] = useState<IProvincia | null>(null);
   const [seccionDomicilio, setSeccionDomicilio] = useState<boolean>(false);
 
   type FormState = {
@@ -33,7 +26,7 @@ export const Register = () => {
     eliminado: boolean;
     nombre: string;
     apellido: string;
-    telefono: number;
+    telefono: string;
     email: string;
     usuario: {
       id: number;
@@ -43,25 +36,23 @@ export const Register = () => {
     };
     domicilios: [
       {
-        id: number;
-        eliminado: boolean;
         calle: string;
         numero: number;
         cp: number;
         piso: number;
         nroDpto: number;
         idLocalidad: number;
-      }
-    ];
+      } 
+    ] | unknown [];
   };
 
   const backend = new BackendMethods();
 
   useEffect(() => {
     const traerCategorias = async () => {
-      const res: IUsuario[] = (await backend.getAll(
+      const res: IUsuario[] = await backend.getAll(
         `${import.meta.env.VITE_LOCAL}usuarioCliente`
-      )) as IUsuario[];
+      );
       setUsuarios(res);
     };
     traerCategorias();
@@ -81,7 +72,10 @@ export const Register = () => {
     }, 3000);
   };
 
-  const enviarUsuario = async (cliente: FormState) => {
+  const enviarUsuario = async (
+    cliente: FormState,
+    { setSubmitting }: FormikHelpers<FormState>
+  ) => {
     console.log("Formulario enviado", cliente);
     const usuarioConMismoNombre = usuarios.find(
       (actual: IUsuario) => actual.userName === cliente.usuario.userName
@@ -91,6 +85,23 @@ export const Register = () => {
       mostrarUsadoONo();
     } else {
       try {
+        // Primero, guardar cada domicilio por separado
+        const domiciliosGuardados = await Promise.all(
+          cliente.domicilios.map(async (domicilio) => {
+            const res = await backend.post(
+              `${import.meta.env.VITE_LOCAL}domicilio`,
+              domicilio
+            );
+            return res;
+            console.log("RESPUESTA DE DOMICILIO")
+            console.log(res)
+          })
+        );
+  
+        // Asignar los domicilios guardados al cliente
+        cliente.domicilios = domiciliosGuardados;
+  
+        // Luego, guardar el cliente
         const res: ICliente = await backend.post(
           `${import.meta.env.VITE_LOCAL}cliente`,
           cliente
@@ -102,6 +113,7 @@ export const Register = () => {
       mostrarYEsconderAlerta();
       setActualizacion(!actualizacion);
     }
+    setSubmitting(false);
   };
 
   const schema = Yup.object().shape({
@@ -115,80 +127,53 @@ export const Register = () => {
       userName: Yup.string().required("El nombre de usuario es obligatorio"),
       auth0Id: Yup.string().required("La contraseña es obligatoria"),
     }),
-    domicilios: Yup.object().shape({
-      calle: Yup.string().required("La calle es obligatoria"),
-      cp: Yup.string().required("El codigo postal es obligatorio"),
-      nroDpto: Yup.string().required(
-        "El número de departamento es obligatorio"
-      ),
-      numero: Yup.string().required("El número del domicilio es obligatorio"),
-      piso: Yup.string().required("El piso del domicilio es obligatorio"),
-    }),
+    domicilios: Yup.array().of(
+      Yup.object().shape({
+        calle: Yup.string().required("La calle es obligatoria"),
+        cp: Yup.string().required("El codigo postal es obligatorio"),
+        nroDpto: Yup.string().required("El número de departamento es obligatorio"),
+        numero: Yup.string().required("El número del domicilio es obligatorio"),
+        piso: Yup.string().required("El piso del domicilio es obligatorio"),
+        idLocalidad: Yup.number().required("La localidad es obligatoria"), // Validación de idLocalidad
+      })
+    ),
   });
 
-  //Effect para traer las provincias de Argentina
   useEffect(() => {
-    const provincias = async () => {
+    const fetchProvincias = async () => {
       try {
         const res: IProvincia[] = await backend.getAll(
           `${import.meta.env.VITE_LOCAL}provincia`
         );
-        setProvincias(res);
-        console.log(res);
+        const uniqueProvincias = Array.from(new Set(res.map(provincia => provincia.id)))
+          .map(id => res.find(provincia => provincia.id === id));
+        setProvincias(uniqueProvincias as IProvincia[]);
+        console.log(uniqueProvincias);
       } catch (error) {
         console.error(error);
       }
     };
-    provincias();
+    fetchProvincias();
   }, []);
 
   useEffect(() => {
-    const localidades = async () => {
-      try {
-        const res: ILocalidad[] = await backend.getAll(
-          `${import.meta.env.VITE_LOCAL}localidad/findByProvincia/${
-            selectedProvincia?.id
-          }`
-        );
-        setLocalidades(res);
-        console.log(res);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    localidades();
+    if (selectedProvincia) {
+      const fetchLocalidades = async () => {
+        try {
+          const res: ILocalidad[] = await backend.getAll(
+            `${import.meta.env.VITE_LOCAL}localidad/findByProvincia/${selectedProvincia.id}`
+          );
+          const uniqueLocalidades = Array.from(new Set(res.map(localidad => localidad.id)))
+            .map(id => res.find(localidad => localidad.id === id));
+          setLocalidades(uniqueLocalidades as ILocalidad[]);
+          console.log(uniqueLocalidades);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      fetchLocalidades();
+    }
   }, [selectedProvincia]);
-
-  const localidadInput = () => {
-    return (
-      <div className="w-full">
-        <div className="font-Roboto text-xl mt-2 w-full">
-          Localidades disponibles:{" "}
-        </div>
-        <select
-          className=" border rounded-md w-full"
-          id="localidad"
-          name="localidad"
-          value={selectedLocalidad?.nombre || ""}
-          onChange={(e) => {
-            {
-              const selectedValue = e.target.value;
-              const selectedLocalidad = localidades.find(
-                (localidad) => localidad.nombre === selectedValue
-              );
-              setSelectedLocalidad(selectedLocalidad);
-            }
-          }}
-        >
-          {localidades.map((localidad, index) => (
-            <option key={index} value={localidad.nombre} className="">
-              {localidad.nombre}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  };
 
   return (
     <div className="bg-[#bc4749] h-screen flex items-center justify-center relative z-50">
@@ -209,8 +194,6 @@ export const Register = () => {
             },
             domicilios: [
               {
-                id: 0,
-                eliminado: false,
                 calle: "",
                 cp: 0,
                 nroDpto: 0,
@@ -223,7 +206,7 @@ export const Register = () => {
           onSubmit={enviarUsuario}
           validationSchema={schema}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, setFieldValue }) => (
             <Form className="card-body">
               <h1 className="card-title flex justify-center text-3xl font-extralight text-red-500/90 mb-5">
                 Registrarse
@@ -251,7 +234,6 @@ export const Register = () => {
                       </div>
                     )}
                   </div>
-
                   <div className="w-[280.34px]">
                     <label className="input italic input-bordered flex border-slate-700 hover:border-red-500/90 text-justify items-center font-normal gap-3">
                       Contraseña
@@ -343,76 +325,7 @@ export const Register = () => {
                     )}
                   </div>
                 </div>
-                <div className="w-full flex justify-center "></div>
-                <button
-                  type="submit"
-                  className="btn btn-outline w-full text-xl font-light text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90"
-                >
-                  Registrarse
-                </button>
-                {mostrarAlerta && (
-                  <div
-                    role="alert"
-                    className="alert alert-success alerta animate__animated animate__fadeInUp"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="stroke-current shrink-0 h-6 w-6 fill-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span className="text-white">
-                      Usuario registrado con éxito!
-                    </span>
-                  </div>
-                )}
-                {nombreUsado && (
-                  <div role="alert" className="alert alert-error">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="stroke-current shrink-0 h-6 w-6 fill-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span className="text-white">
-                      Error! Nombre de usuario en uso.
-                    </span>
-                  </div>
-                )}
               </div>
-              {/* 
-              
-              
-              ASDASASDSDAS
-
-
-
-
-
-
-
-
-
-
-              
-              
-              
-              
-              */}
               <div
                 className={`space-y-5 text-red-500/90 ${
                   seccionDomicilio || "hidden"
@@ -422,17 +335,13 @@ export const Register = () => {
                   <div>
                     <label className="form-control w-full max-w-xs">
                       <div className="label italic gap-3">
-                        <span className="label-text">Provincia</span>
+                        <span className="label-text text-base">Provincia</span>
                       </div>
                       <Field
                         as="select"
                         id="provincia"
                         name="provincia"
-                        className={`border rounded-md w-full mt-1 ${
-                          errors.provincia && touched.provincia
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        }`}
+                        className={` select text-base select-bordered w-[280.34px] max-w-xs border-slate-700 hover:border-red-500/90 flex items-center font-normal`}
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                           const selectedValue = e.target.value;
                           const selectedProvincia =
@@ -440,11 +349,14 @@ export const Register = () => {
                               (provincia) => provincia.nombre === selectedValue
                             ) || null;
                           setSelectedProvincia(selectedProvincia);
+                          setFieldValue("provincia", selectedValue);
+                          setFieldValue("localidad", ""); // Resetear la localidad seleccionada
+                          setFieldValue("domicilios[0].idLocalidad", 0); // Resetear el idLocalidad
                         }}
                       >
                         <option value="" label="Selecciona una provincia" />
-                        {provincias.map((provincia, index) => (
-                          <option key={index} value={provincia.nombre}>
+                        {provincias.map((provincia, id) => (
+                          <option key={id} value={provincia.nombre}>
                             {provincia.nombre}
                           </option>
                         ))}
@@ -459,18 +371,27 @@ export const Register = () => {
                   <div className="w-[280.34px]">
                     <label className="form-control w-full max-w-xs">
                       <div className="label italic gap-3">
-                        <span className="label-text">Localidad</span>
+                        <span className="label-text text-base ">Localidad</span>
                       </div>
                       <Field
                         as="select"
-                        id="localidad"
-                        name="localidad"
-                        className={`italic select select-bordered w-[280.34px] max-w-xs border-slate-700 hover:border-red-500/90 flex items-center font-normal`}
+                        id="domicilios.idLocalidad"
+                        name="domicilios.idLocalidad"
+                        className={` select text-base select-bordered w-[280.34px] max-w-xs border-slate-700 hover:border-red-500/90 flex items-center font-normal`}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                          const selectedValue = e.target.value;
+                          const selectedLocalidad =
+                            localidades.find(
+                              (localidad) => localidad.nombre === selectedValue
+                            ) || null;
+
+                          setFieldValue("localidad", selectedValue);
+                          setFieldValue("domicilios[0].idLocalidad", selectedLocalidad?.id || 0);
+                        }}
                       >
                         <option value="" label="Selecciona una localidad" />
-                        {console.log(localidades)}
-                        {localidades.map((localidad, index) => (
-                          <option key={index} value={localidad.nombre}>
+                        {localidades.map((localidad, id) => (
+                          <option key={id} value={localidad.nombre}>
                             {localidad.nombre}
                           </option>
                         ))}
@@ -478,86 +399,112 @@ export const Register = () => {
                     </label>
                     {errors.localidad && touched.localidad && (
                       <div className="text-red-500 text-sm mt-1">
-                        {errors.localidad}
+                        Localidad obligatoria
                       </div>
                     )}
                   </div>
                 </div>
                 <div className="flex flex-row- space-x-5">
                   <div className="w-[280.34px]">
-                    <label className="input italic input-bordered border-slate-700 hover:border-red-500/90 flex text-justify items-center font-normal gap-3">
-                      Nombre
+                    <label className="form-control w-full max-w-xs">
+                      <div className="label italic gap-3">
+                        <span className="label-text text-base">Calle</span>
+                      </div>
                       <Field
-                        id="nombre"
-                        name="nombre"
+                        id="calle"
+                        name="domicilios[0].calle"
                         type="text"
-                        className="grow text-black"
-                        placeholder=""
+                        className="input text-base text-black input-bordered w-[280.34px] max-w-xs border-slate-700 hover:border-red-500/90 flex items-center font-normal"
+                        placeholder="Calle"
                       />
                     </label>
-
-                    {errors.nombre && touched.nombre && (
+                    {errors.domicilios?.[0]?.calle && touched.domicilios?.[0]?.calle && (
                       <div className="pl-2 text-red-500 font-normal text-left text-sm">
-                        {errors.nombre}
+                        {errors.domicilios?.[0]?.calle}
                       </div>
                     )}
                   </div>
-
                   <div className="w-[280.34px]">
-                    <label className="input italic input-bordered border-slate-700 hover:border-red-500/90 flex text-justify items-center font-normal gap-3">
-                      Apellido
+                    <label className="form-control w-full max-w-xs">
+                      <div className="label italic gap-3">
+                        <span className="label-text text-base">Codigo Postal</span>
+                      </div>
                       <Field
-                        id="apellido"
-                        name="apellido"
+                        id="cp"
+                        name="domicilios[0].cp"
                         type="text"
-                        className="grow text-black"
-                        placeholder=""
+                        className="input text-base text-black input-bordered w-[280.34px] max-w-xs border-slate-700 hover:border-red-500/90 flex items-center font-normal"
+                        placeholder="Código Postal"
                       />
                     </label>
-                    {errors.apellido && touched.apellido && (
+                    {errors.domicilios?.[0]?.cp && touched.domicilios?.[0]?.cp && (
                       <div className="pl-2 text-red-500 font-normal text-left text-sm">
-                        {errors.apellido}
+                        {errors.domicilios?.[0]?.cp}
                       </div>
                     )}
                   </div>
                 </div>
                 <div className="flex flex-row space-x-5">
                   <div className="w-[280.34px]">
-                    <label className="input italic input-bordered border-slate-700 hover:border-red-500/90 flex text-justify items-center font-normal gap-3">
-                      E-mail
+                    <label className="form-control w-full max-w-xs">
+                      <div className="label italic gap-3">
+                        <span className="label-text text-base">Número Dpto.</span>
+                      </div>
                       <Field
-                        id="email"
-                        name="email"
+                        id="nroDpto"
+                        name="domicilios[0].nroDpto"
                         type="text"
-                        className="grow text-black"
-                        placeholder=""
+                        className="input text-base text-black input-bordered w-[280.34px] max-w-xs border-slate-700 hover:border-red-500/90 flex items-center font-normal"
+                        placeholder="0"
                       />
                     </label>
-                    {errors.email && touched.email && (
+                    {errors.domicilios?.[0]?.nroDpto && touched.domicilios?.[0]?.nroDpto && (
                       <div className="pl-2 text-red-500 font-normal text-left text-sm">
-                        {errors.email}
+                        {errors.domicilios?.[0]?.nroDpto}
                       </div>
                     )}
                   </div>
                   <div className="w-[280.34px]">
-                    <label className="input italic input-bordered border-slate-700 hover:border-red-500/90 flex text-justify items-center font-normal gap-3">
-                      Teléfono
+                    <label className="form-control w-full max-w-xs">
+                      <div className="label italic gap-3">
+                        <span className="label-text text-base">Número Domicilio.</span>
+                      </div>
                       <Field
-                        id="telefono"
-                        name="telefono"
+                        id="numero"
+                        name="domicilios[0].numero"
                         type="text"
-                        className="grow text-black"
-                        placeholder=""
+                        className="input text-base text-black input-bordered w-[280.34px] max-w-xs border-slate-700 hover:border-red-500/90 flex items-center font-normal"
+                        placeholder="0"
                       />
                     </label>
-                    {errors.telefono && touched.telefono && (
+                    {errors.domicilios?.[0]?.numero && touched.domicilios?.[0]?.numero && (
                       <div className="pl-2 text-red-500 font-normal text-left text-sm">
-                        {errors.telefono}
+                        {errors.domicilios?.[0]?.numero}
                       </div>
                     )}
                   </div>
                 </div>
-                <div className="w-full flex justify-center "></div>
+                <div className="flex flex-row space-x-5">
+                  <div className="w-[280.34px]">
+                    <label className="form-control w-full max-w-xs">
+                      <div className="label italic gap-3">
+                        <span className="label-text text-base">Piso</span>
+                      </div>
+                      <Field
+                        id="piso"
+                        name="domicilios[0].piso"
+                        type="text"
+                        className="input text-base text-black input-bordered w-[280.34px] max-w-xs border-slate-700 hover:border-red-500/90 flex items-center font-normal"
+                        placeholder="0"
+                      />
+                    </label>
+                    {errors.domicilios?.[0]?.piso && touched.domicilios?.[0]?.piso && (
+                      <div className="pl-2 text-red-500 font-normal text-left text-sm">
+                        {errors.domicilios?.[0]?.piso}
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <button
                   type="submit"
                   className="btn btn-outline w-full text-xl font-light text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90"

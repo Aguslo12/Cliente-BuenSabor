@@ -19,24 +19,26 @@ const ContainerArticulos = () => {
         const traerArticulos = async () => {
             const res: IArticuloManufacturado[] = await backend.getAll(`${import.meta.env.VITE_LOCAL}ArticuloManufacturado/noEliminados`) as IArticuloManufacturado[]
             const ress: IArticuloInsumo[] = await backend.getAll(`${import.meta.env.VITE_LOCAL}ArticuloInsumo/noEliminados`) as IArticuloInsumo[]
-            console.log("ARTIUCLO INSUMOSSS")
-            console.log(ress)
 
             //@ts-expect-error DA ERROR PORQUE EL ARTICULO QUE TRAE EL GET NO TIENE IDCATEGORÍA, TIENE CATEGORÍA
             const ariticulosInsFiltrados: IArticuloInsumo[] = ress.filter((articulo) => articulo.categoria.id === idCategoria)
+            
             setArticulosInsumos(ariticulosInsFiltrados)
             //@ts-expect-error DA ERROR PORQUE EL ARTICULO QUE TRAE EL GET NO TIENE IDCATEGORÍA, TIENE CATEGORÍA
             const articulosFiltrados: IArticuloManufacturado[] = res.filter((articulo) => articulo.categoria.id === idCategoria)
             setArticulosManufacturados(articulosFiltrados);
+            
         }
         traerArticulos();
+        console.log("Articulos manu")
+        console.log(articulosManufacturados)
     }, [idCategoria])
 
     return (
         <div className='pt-24'>
 
             <div className='flex flex-wrap justify-center items-center border p-5 m-10 rounded-xl'>
-                {articulosInsumos.map((articulo:IArticuloInsumo, index:number)=>(
+                {articulosInsumos.map((articulo:IArticuloInsumo)=>(
                     <CardArticuloInsumo
                         denominacion={articulo.denominacion}
                         eliminado={articulo.eliminado}
@@ -50,10 +52,10 @@ const ContainerArticulos = () => {
                         stockMaximo={articulo.stockMaximo}
                         stockMinimo={articulo.stockMinimo}
                         unidadMedida={articulo}
-                        key={index}
+                        key={articulo.id}
                         /> 
                 ))}
-                {articulosManufacturados.map((articulo: IArticuloManufacturado, index: number) => (
+                {articulosManufacturados.map((articulo: IArticuloManufacturado) => (
                     <CardArticulo
                         articuloManufacturadoDetalles={articulo.articuloManufacturadoDetalles}
                         denominacion={articulo.denominacion}
@@ -66,7 +68,7 @@ const ContainerArticulos = () => {
                         stock={articulo.stock}
                         tiempoEstimadoMinutos={articulo.tiempoEstimadoMinutos}
                         unidadMedida={articulo.unidadMedida}
-                        key={index}
+                        key={articulo.id}
                         idCategoria={articulo.idCategoria}
                     />
                 ))}

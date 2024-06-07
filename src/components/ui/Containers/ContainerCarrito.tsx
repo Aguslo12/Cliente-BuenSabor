@@ -9,12 +9,21 @@ import { IHoraEstimadaFinalizacion } from "../../../types/HoraEstimadaFinalizaci
 import { IEmpleado } from "../../../types/Empleado";
 import { IDomicilioDto } from "../../../types/CreateDtos/DomicilioDto";
 import { Link } from "react-router-dom";
+import { IUsuario } from "../../../types/Usuario";
 
 export const ContainerCarrito = () => {
   const { cart, limpiarCarrito } = useCarrito();
   const backend = new BackendMethods();
-  const { suc, pedidoEnviado, usuario } = useSucursalContext();
+  const { suc, pedidoEnviado, usuario, getUsuario } = useSucursalContext();
   const [idCliente, setCliente] = useState<number | undefined>(0);
+
+  
+  const storedUsuario = sessionStorage.getItem('usuario');
+  let user: IUsuario | undefined = undefined;
+
+  if (storedUsuario) {
+    user = JSON.parse(storedUsuario) as IUsuario;
+  }
 
   function eliminarTodo() {
     limpiarCarrito();
@@ -72,17 +81,18 @@ export const ContainerCarrito = () => {
       const res: ICliente[] = (await backend.getAll(
         `${import.meta.env.VITE_LOCAL}cliente`
       )) as ICliente[];
-      console.log("LOS CLIENTES");
-      console.log(res);
       await traerCliente(res);
     };
     traerClientes();
   }, []);
 
   const traerCliente = async (res: ICliente[]) => {
+    getUsuario(user)
     const usuarioEncontrado = res.find(
       (actual: ICliente) => actual.usuario.id == usuario?.id
     );
+    console.log("USUARIO ENCONTRADO")
+    console.log(usuarioEncontrado)
     setCliente(usuarioEncontrado?.id);
   };
 
@@ -176,7 +186,7 @@ export const ContainerCarrito = () => {
             </span>
           </p>
           <div className="card-actions mt-5">
-            {sessionStorage.getItem("usuario") ? (
+            {sessionStorage.getItem('usuario') ? (
               <button
                 className="btn btn-error text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-full"
                 onClick={postPedido}

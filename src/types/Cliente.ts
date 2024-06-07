@@ -8,10 +8,10 @@ export interface ICliente {
     eliminado: boolean
     nombre: string
     apellido: string
-    telefono: number
+    telefono: string
     email: string
     usuario: IUsuario
     imagenCliente: IImagen
-    domicilios: IDomicilio[]
+    domicilios: IDomicilio[] | unknown
     pedidos: IPedido[]
 }

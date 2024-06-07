@@ -1,8 +1,8 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { ISucursalShort } from "../../../types/ShortDtos/SucursalShort";
 import { Link } from "react-router-dom";
 import { FaAngleRight } from "react-icons/fa";
-import { useSucursalContext } from "../../../hooks/useContext";
+import { useCarrito, useSucursalContext } from "../../../hooks/useContext";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { setGlobalSucursal } from "../../../redux/slices/globalSucursal";
 
@@ -18,7 +18,9 @@ const CardSucursal: FC<ISucursalShort> = ({
   imagenes,
 }) => {
 
+
   const { updateSucursal } = useSucursalContext();
+  const { limpiarCarrito } = useCarrito()
 
   const selectedIdSucursal = useAppSelector((state) => state.GlobalSucursal.selected)
 
@@ -39,9 +41,8 @@ const CardSucursal: FC<ISucursalShort> = ({
       imagenes: imagenes,
       nombre: nombre,
     }
+    limpiarCarrito()
     updateSucursal(detalle)
-    console.log("DETALLE SCURUSALES")
-    console.log(detalle)
   }
 
   return (

@@ -30,6 +30,8 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
         `${import.meta.env.VITE_LOCAL}ArticuloManufacturado/${id}`
       )) as IArticuloManufacturado;
       setData(res);
+      console.log("RESPUESTA")
+      console.log(res)
     };
     traerDatos();
   }, []);
@@ -43,6 +45,8 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
 
   const agregar = () => {
     if (data) {
+      console.log("DATA")
+      console.log(`DATA ${data.denominacion}`)
       const detalle: IDetallePedido = {
         id: 0,
         eliminado: false,
