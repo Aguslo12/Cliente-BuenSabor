@@ -14,6 +14,7 @@ export const ContainerCarrito = () => {
   const { cart, limpiarCarrito } = useCarrito();
   const backend = new BackendMethods();
   const { suc, pedidoEnviado, cliente } = useSucursalContext();
+  console.log(cliente);
 
   function eliminarTodo() {
     limpiarCarrito();

@@ -2,28 +2,25 @@ import React, { useEffect, useState } from "react";
 import { useSucursalContext } from "../../../hooks/useContext";
 import { IPedido } from "../../../types/Pedidos";
 import { ICliente } from "../../../types/Cliente";
+import { BackendMethods } from "../../../services/BackendClient";
 
 export const MisPedidos = () => {
+
+  const backend = new BackendMethods();
+
   const storedCliente = sessionStorage.getItem("cliente");
+
   let cliente: ICliente | undefined = undefined;
 
   if (storedCliente) {
     cliente = JSON.parse(storedCliente) as ICliente;
   }
+
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
-  /*
-    function pushCard(nombre: string) {
-        dispatch(setIdEmpresa(String(id)))
-        const idEmpresa = id;
-        navigate(`/${idEmpresa}/sucursales`, { state: { nombre } })
-    }
-    */
+
   const traerPedidos = async () => {
-    const res: IPedido[] = await fetch(
-      `${import.meta.env.VITE_LOCAL}pedido/getPorCliente/${cliente?.id}`
-    );
+    const res: IPedido[] = await backend.getAll( `${import.meta.env.VITE_LOCAL}pedido/getPorCliente/${cliente?.id}`) as IPedido[];
     setPedidos(res);
-    console.log("LOS PEDIDOS");
     console.log(res);
   };
 
