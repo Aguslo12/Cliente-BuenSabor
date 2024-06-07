@@ -6,15 +6,16 @@ import { IEmpresa } from "../../../types/Empresa";
 import { BackendMethods } from "../../../services/BackendClient";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { setGlobalSucursal } from "../../../redux/slices/globalSucursal";
-import { useSucursalContext } from "../../../hooks/useContext";
 import { IUsuario } from "../../../types/Usuario";
 import { FaUser } from "react-icons/fa";
+import { useSucursalContext } from "../../../hooks/useContext";
 
 
 export const Navbar = () => {
   
-
-  const backend = new BackendMethods();
+  const { usuario } = useSucursalContext()
+  
+  const backend = new BackendMethods(); 
 
   const idEmpresa = useAppSelector((state) => state.GlobalIdEmpresa.idEmpresa)
 
@@ -35,7 +36,6 @@ export const Navbar = () => {
   if (storedUsuario) {
     user = JSON.parse(storedUsuario) as IUsuario;
   }
-
 
   useEffect(() => {
     const traerSucursales = async () => {
@@ -80,7 +80,7 @@ export const Navbar = () => {
 
         <div className="navbar-end mr-3">
           <ButtonCarrito />
-          { sessionStorage.getItem('usuario') ? (
+          { sessionStorage.getItem('usuario') || usuario ? (
               <div className="ml-3 dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                 <div className="flex text-red-500 text-[40px] rounded-full border-red-500 border-[3px]">
