@@ -11,11 +11,6 @@ export const EmpresaInicio = () => {
       <div>
         <ContainerEmpresa />
       </div>
-
-      <div className="mt-10">
-        <p className="text-3xl font-semibold flex p-5">Nuestras Promos</p>
-        <ContainerPromocion />
-      </div>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { IFactura } from "../../../types/Factura";
 import { IHoraEstimadaFinalizacion } from "../../../types/HoraEstimadaFinalizacion";
 import { IEmpleado } from "../../../types/Empleado";
 import { IDomicilioDto } from "../../../types/CreateDtos/DomicilioDto";
+import { Link } from "react-router-dom";
 
 export const ContainerCarrito = () => {
   const { cart, limpiarCarrito } = useCarrito();
@@ -83,7 +84,6 @@ export const ContainerCarrito = () => {
       (actual: ICliente) => actual.usuario.id == usuario?.id
     );
     setCliente(usuarioEncontrado?.id);
-    
   };
 
   const [formState, setFormState] = useState<FormState>({
@@ -120,10 +120,10 @@ export const ContainerCarrito = () => {
         (item) =>
           ({
             id: item.id,
-          eliminado: item.eliminado,
-          subTotal: item.subTotal,
-          cantidad: item.cantidad,
-          idArticulo: item.articulo.id,
+            eliminado: item.eliminado,
+            subTotal: item.subTotal,
+            cantidad: item.cantidad,
+            idArticulo: item.articulo.id,
           } as unknown as IDetallePedidoIdArt)
       ),
       total: calcularTotalProductos(),
@@ -132,13 +132,14 @@ export const ContainerCarrito = () => {
   }, [cart, idCliente]);
 
   const postPedido = async () => {
+    console.log(formState);
     try {
       const res: IPedido = await backend.post(
         `${import.meta.env.VITE_LOCAL}pedido`,
         formState
       );
-      console.log("PEDIDO")
-      console.log(res)
+      console.log("PEDIDO");
+      console.log(res);
       if (res.estado === "RECHAZADO") {
         pedidoEnviado(3);
       } else {
@@ -154,18 +155,17 @@ export const ContainerCarrito = () => {
   return (
     <div className="flex justify-end h-80 mt-10 mr-14 align-top">
       <div className="card card-compact w-96 shadow-xl bg-white text-black">
-        <div className="card-body">
-          <h1 className="card-title">Carrito</h1>
-          <p className="text-base flex justify-between my-2">
+        <div className="card-body h-full">
+          <div className="flex justify-center">
+          <h1 className="card-title text-2xl w-28 justify-center bg-red-500 p-1 rounded-lg text-white r">Carrito</h1>
+          </div>
+          
+          <p className="text-base flex justify-between my-8">
             <b className="flex justify-start">Productos:</b>{" "}
             <span className="flex justify-end">
               {" "}
               $ {calcularTotalProductos()}
             </span>
-          </p>
-          <p className="text-base flex justify-between my-2">
-            <b className="flex justify-start">Envio:</b>{" "}
-            <span className="flex justify-end">Gratis</span>
           </p>
           <hr />
           <p className="text-base flex justify-between my-2">
@@ -175,13 +175,21 @@ export const ContainerCarrito = () => {
               $ {calcularTotalProductos()}
             </span>
           </p>
-          <div className="card-actions justify-end mt-5">
-            <button
-              className="btn btn-error text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-full"
-              onClick={postPedido}
-            >
-              Comprar
-            </button>
+          <div className="card-actions mt-5">
+            {sessionStorage.getItem("usuario") ? (
+              <button
+                className="btn btn-error text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-full"
+                onClick={postPedido}
+              >
+                Comprar
+              </button>
+            ) : (
+              <Link to={"/iniciarSesion"} className="w-full">
+                <button className="btn btn-primary w-full">
+                  Iniciar Sesion
+                </button>
+              </Link>
+            )}
           </div>
         </div>
       </div>

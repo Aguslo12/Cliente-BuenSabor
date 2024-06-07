@@ -13,7 +13,7 @@ const Hero = () => {
           {sessionStorage.getItem("usuario") ? (
             <h1 className="flex justify-center text-5xl font-bold text-white">
               ¡Bienvenido{" "}
-              <span className= "text-red-600">{usuario?.userName}</span> !
+              <span className= "pl-2 text-red-600">{" "}{usuario?.userName}</span> !
             </h1>
           ) : (
             <h1 className="flex justify-center text-5xl font-bold text-white">

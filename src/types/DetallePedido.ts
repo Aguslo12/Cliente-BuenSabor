@@ -1,3 +1,4 @@
+import { IArticuloInsumo } from "./ArticuloInsumo"
 import { IArticuloManufacturado } from "./ArticuloManufacturado"
 
 export interface IDetallePedido {
@@ -5,5 +6,5 @@ export interface IDetallePedido {
     eliminado:boolean
     cantidad: number
     subTotal: number
-    articulo: IArticuloManufacturado
+    articulo: IArticuloManufacturado | IArticuloInsumo
 }

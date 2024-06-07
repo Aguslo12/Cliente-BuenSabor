@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { CardArticuloCarrito } from "../../ui/Cards/CardArticuloCarrito";
 import { ContainerCarrito } from "../../ui/Containers/ContainerCarrito";
 import { Bounce, ToastContainer, toast } from "react-toastify";
-import { useSucursalContext } from "../../../hooks/useContext";
+import {  useSucursalContext } from "../../../hooks/useContext";
 import "react-toastify/dist/ReactToastify.css";
 
 export const Carrito = () => {

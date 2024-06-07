@@ -4,7 +4,7 @@ export interface IArticuloInsumo {
   id: number;
   denominacion: string;
   precioVenta: number;
-  imagenes: [];
+  imagenes: FileList;
   unidadMedida: IUnidadMedida;
   precioCompra: number;
   stockActual: number;
