@@ -1,13 +1,13 @@
 import { ReactNode, createContext, useState } from "react";
 import { ISucursalShort } from "../types/ShortDtos/SucursalShort";
-import { IUsuario } from "../types/Usuario";
+import { ICliente } from "../types/Cliente";
 
 interface SucursalContextType {
   suc: ISucursalShort | null;
   updateSucursal: (sucursal: ISucursalShort) => void;
   str: number;
-  usuario: IUsuario | undefined;
-  getUsuario: (usuarioId: IUsuario | undefined) => void;
+  cliente: ICliente | undefined;
+  getCliente: (cliente: ICliente | undefined) => void;
   pedidoEnviado: (estado: number) => void;
 }
 
@@ -18,10 +18,10 @@ export const SucursalContext = createContext<SucursalContextType | undefined>(
 export function SucursalContextProvider({ children }: { children: ReactNode }) {
   const [suc, setSuc] = useState<ISucursalShort | null>(null);
   const [str, setStr] = useState<number>(0);
-  const [usuario, setUsuarioId] = useState<IUsuario | undefined>()
+  const [cliente, setCliente] = useState<ICliente | undefined>()
 
-  const getUsuario = (usuario: IUsuario | undefined) => {
-    setUsuarioId(usuario)
+  const getCliente = (cliente: ICliente | undefined) => {
+    setCliente(cliente)
   }
 
   const updateSucursal = (sucursal: ISucursalShort) => {
@@ -34,7 +34,7 @@ export function SucursalContextProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <SucursalContext.Provider value={{ suc, updateSucursal, pedidoEnviado, str, usuario, getUsuario }}>
+    <SucursalContext.Provider value={{ suc, updateSucursal, pedidoEnviado, str, cliente, getCliente }}>
       {children}
     </SucursalContext.Provider>
   );

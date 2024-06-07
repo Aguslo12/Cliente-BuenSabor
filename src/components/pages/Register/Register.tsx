@@ -33,6 +33,7 @@ export const Register = () => {
       eliminado: boolean;
       auth0Id: string;
       userName: string;
+      clave: string;
     };
     domicilios: [
       {
@@ -76,11 +77,9 @@ export const Register = () => {
     cliente: FormState,
     { setSubmitting }: FormikHelpers<FormState>
   ) => {
-    console.log("Formulario enviado", cliente);
     const usuarioConMismoNombre = usuarios.find(
       (actual: IUsuario) => actual.userName === cliente.usuario.userName
     );
-    console.log(usuarioConMismoNombre);
     if (usuarioConMismoNombre) {
       mostrarUsadoONo();
     } else {
@@ -93,8 +92,6 @@ export const Register = () => {
               domicilio
             );
             return res;
-            console.log("RESPUESTA DE DOMICILIO")
-            console.log(res)
           })
         );
   
@@ -103,10 +100,9 @@ export const Register = () => {
   
         // Luego, guardar el cliente
         const res: ICliente = await backend.post(
-          `${import.meta.env.VITE_LOCAL}cliente`,
+          `${import.meta.env.VITE_LOCAL}cliente/create`,
           cliente
         );
-        console.log("Usuario registrado", res);
       } catch (error) {
         console.error(error);
       }
@@ -125,7 +121,7 @@ export const Register = () => {
       .required("El email es obligatorio."),
     usuario: Yup.object().shape({
       userName: Yup.string().required("El nombre de usuario es obligatorio"),
-      auth0Id: Yup.string().required("La contraseña es obligatoria"),
+      clave: Yup.string().required("La contraseña es obligatoria"),
     }),
     domicilios: Yup.array().of(
       Yup.object().shape({
@@ -148,7 +144,6 @@ export const Register = () => {
         const uniqueProvincias = Array.from(new Set(res.map(provincia => provincia.id)))
           .map(id => res.find(provincia => provincia.id === id));
         setProvincias(uniqueProvincias as IProvincia[]);
-        console.log(uniqueProvincias);
       } catch (error) {
         console.error(error);
       }
@@ -166,7 +161,6 @@ export const Register = () => {
           const uniqueLocalidades = Array.from(new Set(res.map(localidad => localidad.id)))
             .map(id => res.find(localidad => localidad.id === id));
           setLocalidades(uniqueLocalidades as ILocalidad[]);
-          console.log(uniqueLocalidades);
         } catch (error) {
           console.error(error);
         }
@@ -191,6 +185,7 @@ export const Register = () => {
               eliminado: false,
               auth0Id: "",
               userName: "",
+              clave: "",
             },
             domicilios: [
               {
@@ -238,16 +233,16 @@ export const Register = () => {
                     <label className="input italic input-bordered flex border-slate-700 hover:border-red-500/90 text-justify items-center font-normal gap-3">
                       Contraseña
                       <Field
-                        id="auth0Id"
-                        name="usuario.auth0Id"
+                        id="clave"
+                        name="usuario.clave"
                         type="password"
                         className="grow text-black"
                         placeholder=""
                       />
                     </label>
-                    {errors.usuario?.auth0Id && touched.usuario?.auth0Id && (
+                    {errors.usuario?.clave && touched.usuario?.clave && (
                       <div className="pl-2 text-red-500 font-normal text-left text-sm">
-                        {errors.usuario.auth0Id}
+                        {errors.usuario.clave}
                       </div>
                     )}
                   </div>

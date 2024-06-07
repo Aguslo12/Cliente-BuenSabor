@@ -3,6 +3,7 @@ import { SucursalContextProvider } from "../../context/SucursalContext";
 import { Carrito } from "../pages/Carrito/Carrito";
 import { Home } from "../pages/Home/Home";
 import { Login } from "../pages/Login/Login";
+import { MisPedidos } from "../pages/MisPedidos/MisPedidos";
 import { Register } from "../pages/Register/Register";
 import SucursalInicio from "../pages/Sucursal/SucursalInicio";
 import Tienda from "../pages/Tienda/Tienda";
@@ -19,6 +20,7 @@ const AppRouter = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/carrito" element={<Carrito />}></Route>
+            <Route path="/misPedidos" element={<MisPedidos/>}/>
             <Route
               path="/:idEmpresa/sucursales"
               element={<SucursalInicio />}

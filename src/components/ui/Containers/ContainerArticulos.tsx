@@ -30,14 +30,12 @@ const ContainerArticulos = () => {
             
         }
         traerArticulos();
-        console.log("Articulos manu")
-        console.log(articulosManufacturados)
     }, [idCategoria])
 
     return (
         <div className='pt-24'>
 
-            <div className='flex flex-wrap justify-center items-center border p-5 m-10 rounded-xl'>
+            <div className='flex flex-wrap justify-center items-center p-5 m-10'>
                 {articulosInsumos.map((articulo:IArticuloInsumo)=>(
                     <CardArticuloInsumo
                         denominacion={articulo.denominacion}

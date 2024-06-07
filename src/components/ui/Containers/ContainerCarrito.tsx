@@ -9,21 +9,11 @@ import { IHoraEstimadaFinalizacion } from "../../../types/HoraEstimadaFinalizaci
 import { IEmpleado } from "../../../types/Empleado";
 import { IDomicilioDto } from "../../../types/CreateDtos/DomicilioDto";
 import { Link } from "react-router-dom";
-import { IUsuario } from "../../../types/Usuario";
 
 export const ContainerCarrito = () => {
   const { cart, limpiarCarrito } = useCarrito();
   const backend = new BackendMethods();
-  const { suc, pedidoEnviado, usuario, getUsuario } = useSucursalContext();
-  const [idCliente, setCliente] = useState<number | undefined>(0);
-
-  
-  const storedUsuario = sessionStorage.getItem('usuario');
-  let user: IUsuario | undefined = undefined;
-
-  if (storedUsuario) {
-    user = JSON.parse(storedUsuario) as IUsuario;
-  }
+  const { suc, pedidoEnviado, cliente } = useSucursalContext();
 
   function eliminarTodo() {
     limpiarCarrito();
@@ -76,26 +66,6 @@ export const ContainerCarrito = () => {
     totalVenta: 1500.0,
   };
 
-  useEffect(() => {
-    const traerClientes = async () => {
-      const res: ICliente[] = (await backend.getAll(
-        `${import.meta.env.VITE_LOCAL}cliente`
-      )) as ICliente[];
-      await traerCliente(res);
-    };
-    traerClientes();
-  }, []);
-
-  const traerCliente = async (res: ICliente[]) => {
-    getUsuario(user)
-    const usuarioEncontrado = res.find(
-      (actual: ICliente) => actual.usuario.id == usuario?.id
-    );
-    console.log("USUARIO ENCONTRADO")
-    console.log(usuarioEncontrado)
-    setCliente(usuarioEncontrado?.id);
-  };
-
   const [formState, setFormState] = useState<FormState>({
     id: 0,
     detallesPedido: cart.map(
@@ -109,7 +79,7 @@ export const ContainerCarrito = () => {
         } as unknown as IDetallePedidoIdArt)
     ),
     fechaPedido: null,
-    idCliente: idCliente,
+    idCliente: cliente?.id,
     eliminado: false,
     total: calcularTotalProductos(),
     formaPago: "EFECTIVO",
@@ -137,9 +107,9 @@ export const ContainerCarrito = () => {
           } as unknown as IDetallePedidoIdArt)
       ),
       total: calcularTotalProductos(),
-      idCliente: idCliente,
+      idCliente: cliente?.id,
     }));
-  }, [cart, idCliente]);
+  }, [cart, cliente]);
 
   const postPedido = async () => {
     console.log(formState);
@@ -186,7 +156,7 @@ export const ContainerCarrito = () => {
             </span>
           </p>
           <div className="card-actions mt-5">
-            {sessionStorage.getItem('usuario') ? (
+            {sessionStorage.getItem('cliente') ? (
               <button
                 className="btn btn-error text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-full"
                 onClick={postPedido}

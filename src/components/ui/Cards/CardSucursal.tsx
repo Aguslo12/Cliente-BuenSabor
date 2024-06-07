@@ -19,7 +19,7 @@ const CardSucursal: FC<ISucursalShort> = ({
 }) => {
 
 
-  const { updateSucursal } = useSucursalContext();
+  const { updateSucursal, suc } = useSucursalContext();
   const { limpiarCarrito } = useCarrito()
 
   const selectedIdSucursal = useAppSelector((state) => state.GlobalSucursal.selected)
@@ -41,8 +41,11 @@ const CardSucursal: FC<ISucursalShort> = ({
       imagenes: imagenes,
       nombre: nombre,
     }
-    limpiarCarrito()
-    updateSucursal(detalle)
+    console.log(`sucId= ${suc?.id} detalleId= ${detalle.id}`)
+    if(suc?.id !== detalle.id){
+      limpiarCarrito()
+      updateSucursal(detalle)
+    }
   }
 
   return (

@@ -23,7 +23,7 @@ export const ButtonCarrito = () => {
       <div
         tabIndex={0}
         role="button"
-        className="btn rounded-2xl text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-48"
+        className="btn rounded-xl mr-4 text-white bg-red-600 hover:bg-white hover:border-red-600/90 hover:text-red-600/90 w-36"
       >
 
         <div className="text-lg">$ {calcularTotalProductos()}</div>
