@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { IPedido } from "../../../types/Pedidos";
-import { IDetallePedido } from "../../../types/DetallePedido";
+import { IDetallePedidoDos } from "../../../types/DetallePedidoDos";
 
 export const CardPedido: FC<IPedido> = ({
   id,
@@ -90,9 +90,9 @@ export const CardPedido: FC<IPedido> = ({
             </button>
             <h3 className="font-bold text-lg flex justify-center p-7">Artículos Pedido Nro {id}</h3>
             <div className="px-1 space-y-4 py-5 bg-white rounded text-black">
-            {detallesPedido.map((pedido: IDetallePedido)=> (
+            {detallesPedido.map((pedido: IDetallePedidoDos)=> (
                 pedido.articuloInsumo === null || pedido.articuloManufacturado ? (
-                    <p className="flex w-full justify-between px-2  font-semibold">{pedido.articuloManufacturado.denominacion}: <b className="font-bold">{pedido.cantidad}</b></p>
+                    <p className="flex w-full justify-between px-2  font-semibold">{pedido.articuloManufacturado?.denominacion}: <b className="font-bold">{pedido.cantidad}</b></p>
                 ) : pedido.articuloInsumo ? (
                     <p className="justify-between flex w-full px-2 font-semibold">{pedido.articuloInsumo.denominacion}: <b className="font-bold">{pedido.cantidad}</b></p>
                 ) : (

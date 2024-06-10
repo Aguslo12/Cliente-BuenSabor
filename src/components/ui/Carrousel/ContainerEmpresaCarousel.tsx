@@ -31,13 +31,13 @@ const ContainerEmpresaCarousel = () => {
       showArrows={false}
       showIndicators={true}
     >
-      {empresas.map((empresa, index) => (
+      {empresas.map((empresa, id) => (
         <CardEmpresa
           cuil={empresa.cuil}
           id={empresa.id}
           nombre={empresa.nombre}
           razonSocial={empresa.razonSocial}
-          key={index}
+          key={id}
           eliminado={empresa.eliminado}
           imagenes={empresa.imagenes}
           sucursales={empresa.sucursales}

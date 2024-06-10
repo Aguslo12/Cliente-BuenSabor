@@ -6,24 +6,21 @@ import { useAppDispatch } from "../../../hooks/redux";
 import { setIdEmpresa } from "../../../redux/slices/idEmpresa";
 
 export const CardEmpresa: FC<IEmpresaShort> = ({ nombre, imagenes, id }) => {
-
   const navigate = useNavigate();
-
   const dispatch = useAppDispatch();
 
   function pushCard(nombre: string) {
-
-    dispatch(setIdEmpresa(String(id)))
+    dispatch(setIdEmpresa(String(id)));
     const idEmpresa = id;
-    navigate(`/${idEmpresa}/sucursales`, { state: { nombre } })
+    navigate(`/${idEmpresa}/sucursales`, { state: { nombre } });
   }
 
   return (
     <>
-      <div className="bg-white  group transition-all hover:scale-105 rounded-md cursor-pointer  overflow-hidden size-40 w-72 m-2 " onClick={() => pushCard(nombre)}>
-        <div className="">
+      <div className="bg-white group transition-all hover:scale-105 rounded-md cursor-pointer overflow-hidden size-40 w-72 m-2" onClick={() => pushCard(nombre)}>
+        <div>
           {imagenes.map((foto) => (
-            <img src={foto.url} alt={foto.name} className="h-28 w-full" />
+            <img src={foto.url} alt={foto.name} className="h-28 w-full" key={foto.url} />
           ))}
         </div>
         <div className="flex w-full transition-all">

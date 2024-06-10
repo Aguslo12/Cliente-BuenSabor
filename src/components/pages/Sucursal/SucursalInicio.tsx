@@ -13,12 +13,9 @@ const SucursalInicio = () => {
     <div className=" h-auto pt-24">
       <div className="flex flex-col">
         <div className="flex flex-col justify-center items-center w-full">
-        <p className="text-3xl text-start font-semibold flex p-5 text-red-500">Empresas</p>
+        <p className="text-3xl text-start font-semibold flex p-5 text-red-500">Sucursales</p>
           {/* <p className="text-3xl font-semibold flex p-5">Sucursales de {nombreEmpresa}</p> */}
           <ContainerSucursal />
-        </div>
-        <div className="flex flex-col justify-center items-center w-full">
-          <p className="text-3xl text-start font-semibold flex p-5 text-red-500">Promos</p>
         </div>
       </div>
     </div>

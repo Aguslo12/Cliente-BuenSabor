@@ -12,6 +12,6 @@ export interface ICliente {
     email: string
     usuario: IUsuario
     imagenCliente: IImagen
-    domicilios: IDomicilio[] | unknown
+    domicilios: IDomicilio[]
     pedidos: IPedido[]
 }

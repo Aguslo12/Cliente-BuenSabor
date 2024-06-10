@@ -1,23 +1,18 @@
 import React, { FC, useEffect, useState } from "react";
 import { IArticuloManufacturado } from "../../../types/ArticuloManufacturado";
-import { BsCart3, BsFillCartFill } from "react-icons/bs";
+import { BsFillCartFill } from "react-icons/bs";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useCarrito } from "../../../hooks/useContext";
-import { IDetallePedido } from "../../../types/DetallePedido";
 import { BackendMethods } from "../../../services/BackendClient";
+import { IDetallePedidoDos } from "../../../types/DetallePedidoDos";
+import { IDetallePedido } from "../../../types/DetallePedido";
 
 const CardArticulo: FC<IArticuloManufacturado> = ({
   id,
   denominacion,
   imagenes,
-  descripcion,
-  articuloManufacturadoDetalles,
-  eliminado,
   precioVenta,
-  preparacion,
-  stock,
   tiempoEstimadoMinutos,
-  unidadMedida,
 }) => {
   const { cart, addCarrito, removeItemCarrito } = useCarrito();
   const [cantidad, setCantidad] = useState<number>(0);
@@ -30,14 +25,14 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
         `${import.meta.env.VITE_LOCAL}ArticuloManufacturado/${id}`
       )) as IArticuloManufacturado;
       setData(res);
-      console.log("RESPUESTA")
-      console.log(res)
     };
     traerDatos();
   }, []);
 
   useEffect(() => {
-    const itemInCart = cart.find((item) => item.articulo.id === id);
+    const itemInCart = cart.find(
+      (item) => item.articulo?.id === id
+    );
     if (itemInCart) {
       setCantidad(itemInCart.cantidad);
     }
@@ -45,8 +40,8 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
 
   const agregar = () => {
     if (data) {
-      console.log("DATA")
-      console.log(`DATA ${data.denominacion}`)
+      console.log("DATA");
+      console.log(`DATA ${data.denominacion}`);
       const detalle: IDetallePedido = {
         id: 0,
         eliminado: false,
@@ -61,10 +56,16 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
 
   const eliminar = () => {
     if (data) {
-      const detalle: IDetallePedido = { id: 0, cantidad, eliminado:false, articulo: data, subTotal: data.precioVenta };
+      const detalle: IDetallePedido = {
+        id: 0,
+        cantidad,
+        eliminado: false,
+        articulo: data,
+        subTotal: data.precioVenta,
+      };
       removeItemCarrito(detalle);
       if (cantidad > 0) {
-        setCantidad(prevCantidad => prevCantidad - 1);
+        setCantidad((prevCantidad) => prevCantidad - 1);
       }
     }
   };
@@ -83,12 +84,14 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
           <p className="text-red-600 font-bold">${precioVenta}</p>
         </div>
 
-
         {/*FUNCIONALIDADES */}
         <div className="w-full flex items-center justify-between">
           <div className="justify-end items-end m-3 flex w-min border rounded-xl ">
-            <button className="btn bg-white hover:bg-white text-red-600  border-none rounded-l-xl rounded-r-none  text-sm disabled:bg-white disabled:text-slate-300"
-              onClick={eliminar} disabled={cantidad === 0}>
+            <button
+              className="btn bg-white hover:bg-white text-red-600  border-none rounded-l-xl rounded-r-none  text-sm disabled:bg-white disabled:text-slate-300"
+              onClick={eliminar}
+              disabled={cantidad === 0}
+            >
               <FaMinus className="bg-white" />
             </button>
 
@@ -103,10 +106,14 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
             <BsFillCartFill />
           </h1> */}
           <div>
-            <div className={`bg-custom-green m-2  items-center flex flex-row font-medium text-2xl  justify-center transition-all
-            ${cantidad >= 1 ? 'text-red-600 ' : 'text-gray-600 '}`}>
+            <div
+              className={`bg-custom-green m-2  items-center flex flex-row font-medium text-2xl  justify-center transition-all
+            ${cantidad >= 1 ? "text-red-600 " : "text-gray-600 "}`}
+            >
               <BsFillCartFill className="text-2xl mx-2" />
-              <h1 className={`w-8 ${cantidad >= 1 || 'opacity-0'}`}>{cantidad}</h1>
+              <h1 className={`w-8 ${cantidad >= 1 || "opacity-0"}`}>
+                {cantidad}
+              </h1>
             </div>
           </div>
         </div>

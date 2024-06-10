@@ -2,9 +2,10 @@ import { FC, useEffect, useState } from "react";
 import { IArticuloInsumo } from "../../../types/ArticuloInsumo";
 import { useCarrito } from "../../../hooks/useContext";
 import { BackendMethods } from "../../../services/BackendClient";
-import { IDetallePedido } from "../../../types/DetallePedido";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { BsFillCartFill } from "react-icons/bs";
+import { IDetallePedidoDos } from "../../../types/DetallePedidoDos";
+import { IDetallePedido } from "../../../types/DetallePedido";
 
 const CardArticuloInsumo: FC<IArticuloInsumo> = ({
   id,
@@ -29,7 +30,7 @@ const CardArticuloInsumo: FC<IArticuloInsumo> = ({
   }, []);
 
   useEffect(() => {
-    const itemInCart = cart.find((item) => item.articulo.id === id);
+    const itemInCart = cart.find((item) => item.articulo?.id === id);
     if (itemInCart) {
       setCantidad(itemInCart.cantidad);
     }
@@ -37,7 +38,7 @@ const CardArticuloInsumo: FC<IArticuloInsumo> = ({
 
   const agregar = () => {
     if (data) {
-      const detalle: IDetallePedido = {
+      const detalle: IDetallePedido= {
         id: 0,
         eliminado: false,
         cantidad: 1,

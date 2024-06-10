@@ -1,4 +1,4 @@
-import React, { FC, useContext } from "react";
+import { FC } from "react";
 import { ISucursalShort } from "../../../types/ShortDtos/SucursalShort";
 import { Link } from "react-router-dom";
 import { FaAngleRight } from "react-icons/fa";
@@ -18,7 +18,6 @@ const CardSucursal: FC<ISucursalShort> = ({
   imagenes,
 }) => {
 
-
   const { updateSucursal, suc } = useSucursalContext();
   const { limpiarCarrito } = useCarrito()
 
@@ -27,7 +26,6 @@ const CardSucursal: FC<ISucursalShort> = ({
   const dispatch = useAppDispatch();
 
   const actualizar = () => {
-
     dispatch(setGlobalSucursal(id))
 
     const detalle: ISucursalShort = {
@@ -49,29 +47,25 @@ const CardSucursal: FC<ISucursalShort> = ({
   }
 
   return (
-    <>
-
-
-      <Link
-        className="bg-white  group transition-all hover:scale-105 rounded-md cursor-pointer  overflow-hidden size-40 w-72 m-5 shadow-md "
-        to={`categorias/${id}`}
-        onClick={actualizar}
-      >
-        <div className="">
-          {imagenes.map((foto) => (
-            <img src={foto.url} alt={foto.name} className="h-28 w-full" />
-          ))}
-        </div>
-        <div className="flex w-full">
-          <h1 className="flex text-black font-semibold p-3 text-left w-full">
-            {nombre}
-          </h1>
-          <p className="flex text-right items-center p-3">
-            <FaAngleRight />
-          </p>
-        </div>
-      </Link>
-    </>
+    <Link
+      className="bg-white group transition-all hover:scale-105 rounded-md cursor-pointer overflow-hidden size-40 w-72 m-5 shadow-md"
+      to={`categorias/${id}`}
+      onClick={actualizar}
+    >
+      <div>
+        {imagenes.map((foto) => (
+          <img src={foto.url} alt={foto.name} className="h-28 w-full" key={foto.url} />
+        ))}
+      </div>
+      <div className="flex w-full">
+        <h1 className="flex text-black font-semibold p-3 text-left w-full">
+          {nombre}
+        </h1>
+        <p className="flex text-right items-center p-3">
+          <FaAngleRight />
+        </p>
+      </div>
+    </Link>
   );
 };
 

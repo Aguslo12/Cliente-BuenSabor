@@ -6,19 +6,27 @@ import { ICliente } from "../../../types/Cliente";
 import { IoMdSettings } from "react-icons/io";
 import { IoTicket } from "react-icons/io5";
 import { MdLogout } from "react-icons/md";
+import { useEffect } from "react";
 
 export const Navbar = () => {
-  const { cliente } = useSucursalContext();
+  const { cliente, getCliente } = useSucursalContext();
+
+
 
   const desLoguearte = () => {
     sessionStorage.removeItem("cliente");
   };
   const storedCliente = sessionStorage.getItem("cliente");
-  let user: ICliente | null = null;
+  let user: ICliente | undefined = undefined;
 
   if (storedCliente) {
     user = JSON.parse(storedCliente) as ICliente;
   }
+
+  useEffect(() => {
+    getCliente(user)
+  }, [])
+  
 
   /*
   useEffect(() => {
