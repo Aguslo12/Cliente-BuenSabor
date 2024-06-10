@@ -13,8 +13,14 @@ import { Link } from "react-router-dom";
 export const ContainerCarrito = () => {
   const { cart, limpiarCarrito } = useCarrito();
   const backend = new BackendMethods();
-  const { suc, pedidoEnviado, cliente } = useSucursalContext();
-  console.log(cliente);
+  const { suc, pedidoEnviado } = useSucursalContext();
+
+  const storedCliente = sessionStorage.getItem("cliente");
+  let client: ICliente | null = null;
+
+  if (storedCliente) {
+    client = JSON.parse(storedCliente) as ICliente;
+  }
 
   function eliminarTodo() {
     limpiarCarrito();
@@ -80,7 +86,7 @@ export const ContainerCarrito = () => {
         } as unknown as IDetallePedidoIdArt)
     ),
     fechaPedido: null,
-    idCliente: cliente?.id,
+    idCliente: client?.id,
     eliminado: false,
     total: calcularTotalProductos(),
     formaPago: "EFECTIVO",
@@ -108,9 +114,9 @@ export const ContainerCarrito = () => {
           } as unknown as IDetallePedidoIdArt)
       ),
       total: calcularTotalProductos(),
-      idCliente: cliente?.id,
+      idCliente: client?.id,
     }));
-  }, [cart, cliente]);
+  }, [cart, client]);
 
   const postPedido = async () => {
     console.log(formState);
@@ -157,7 +163,7 @@ export const ContainerCarrito = () => {
             </span>
           </p>
           <div className="card-actions mt-5">
-            {sessionStorage.getItem('cliente') ? (
+            {client ? (
               <button
                 className="btn btn-error text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-full"
                 onClick={postPedido}

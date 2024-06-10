@@ -6,7 +6,6 @@ import * as Yup from "yup";
 import { IUsuario } from "../../../types/Usuario";
 import { BackendMethods } from "../../../services/BackendClient";
 import { useSucursalContext } from "../../../hooks/useContext";
-import { MD5 } from "crypto-js";
 import { ICliente } from "../../../types/Cliente";
 
 export const Login = () => {

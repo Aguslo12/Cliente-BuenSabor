@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 import { ButtonCarrito } from "./ButtonCarrito";
 import { FaUser } from "react-icons/fa";
 import { useSucursalContext } from "../../../hooks/useContext";
-import { ButtonMisPedidos } from "./ButtonMisPedidos";
 import { ICliente } from "../../../types/Cliente";
+import { IoMdSettings } from "react-icons/io";
+import { IoTicket } from "react-icons/io5";
+import { MdLogout } from "react-icons/md";
 
 export const Navbar = () => {
   const { cliente } = useSucursalContext();
@@ -66,19 +68,6 @@ export const Navbar = () => {
           </>
         }
         */}
-
-        {user || cliente ? (
-          <Link to={"/misPedidos"}>
-            <div className="navbar-center">
-      <button className="flex text-lg rounded-xl btn mx-10 bg-red-600 text-white hover:border-red-600 hover:text-red-600 hover:bg-white">
-        Mis pedidos
-      </button>
-      
-    </div>
-          </Link>
-        ) : (
-          <div></div>
-        )}
         <div className="navbar-end mr-3">
           <ButtonCarrito />
           {user || cliente ? (
@@ -99,21 +88,37 @@ export const Navbar = () => {
                 tabIndex={0}
                 className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
               >
+                <p className="flex justify-center text-base rounded font-bold p-2">
+                  {user?.usuario.userName}
+                </p>
+
                 <li>
-                  <a className="justify-between">
-                    Usuario
-                    <span className="badge badge-primary">
-                      {user?.usuario.userName}
-                    </span>
-                  </a>
+                  <Link
+                    to={"/miPerfil"}
+                    className="flex justify-center border-black text-black hover:bg-white hover:text-red-500/80 mt-3 p-3 hover:border-red-500 border-[1px]"
+                  >
+                    <IoMdSettings />
+                    Mi Perfil <IoMdSettings />
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/misPedidos"}
+                    className="flex justify-center border-black text-black hover:bg-white hover:text-red-500/80 mt-3 p-3 hover:border-red-500 border-[1px]"
+                  >
+                    <IoTicket />
+                    Mis Pedidos
+                    <IoTicket />
+                  </Link>
                 </li>
                 <li>
                   <Link
                     to={"/iniciarSesion"}
                     onClick={desLoguearte}
-                    className="flex justify-center bg-red-500 text-white hover:bg-white hover:text-red-500/80 mt-3 p-1 hover:border-red-500 border-[1px]"
+                    className="flex justify-center bg-red-500 text-white hover:bg-white hover:text-red-500/80 mt-3 p-3 hover:border-red-500 border-[1px]"
                   >
                     Cerrar Sesión
+                    <MdLogout />
                   </Link>
                 </li>
               </ul>

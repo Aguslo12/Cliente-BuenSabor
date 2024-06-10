@@ -26,7 +26,7 @@ const ContainerCategoria = () => {
     return (
         <div className='pt-24 bg-white'>
             <div className='flex flex-wrap justify-center items-center fixed z-40 bg-white w-full'>
-                {categorias.map((categoria: ICategoriaShort, index: number) => (
+                {categorias.map((categoria: ICategoriaShort, id: number) => (
                     <CardCategoria
                         denominacion={categoria.denominacion}
                         id={categoria.id}
@@ -34,7 +34,7 @@ const ContainerCategoria = () => {
                         esInsumo={categoria.esInsumo}
                         esPadre={categoria.esPadre}
                         idSucursal={categoria.idSucursal}
-                        key={index}
+                        key={id}
                     />
                 ))}
             </div>

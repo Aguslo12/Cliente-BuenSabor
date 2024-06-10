@@ -6,5 +6,6 @@ export interface IDetallePedido {
     eliminado:boolean
     cantidad: number
     subTotal: number
-    articulo: IArticuloManufacturado | IArticuloInsumo
+    articuloInsumo: IArticuloInsumo
+    articuloManufacturado: IArticuloManufacturado 
 }

@@ -9,5 +9,5 @@ export interface IPedido {
     tipoEnvio: string
     formaPago: string
     fechaPedido: string
-    pedidoDetalles: IDetallePedido[] 
+    detallesPedido: IDetallePedido[] 
 }

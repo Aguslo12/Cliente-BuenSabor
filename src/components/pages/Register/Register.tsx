@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { ChangeEvent, useEffect, useState } from "react";
 import * as Yup from "yup";
-import { IUsuario } from "../../../types/Usuario";
 import { BackendMethods } from "../../../services/BackendClient";
 import { ILocalidad } from "../../../types/Domicilio/Localidad";
 import { IProvincia } from "../../../types/Domicilio/Provincia";
@@ -13,11 +12,12 @@ export const Register = () => {
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const [actualizacion, setActualizacion] = useState(false);
   const [nombreUsado, setNombreUsado] = useState(false);
-  const [usuarios, setUsuarios] = useState<IUsuario[]>([]);
 
   const [provincias, setProvincias] = useState<IProvincia[]>([]);
   const [localidades, setLocalidades] = useState<ILocalidad[]>([]);
-  const [selectedProvincia, setSelectedProvincia] = useState<IProvincia | null>(null);
+  const [selectedProvincia, setSelectedProvincia] = useState<IProvincia | null>(
+    null
+  );
   const [seccionDomicilio, setSeccionDomicilio] = useState<boolean>(false);
 
   type FormState = {
@@ -35,29 +35,21 @@ export const Register = () => {
       userName: string;
       clave: string;
     };
-    domicilios: [
-      {
-        calle: string;
-        numero: number;
-        cp: number;
-        piso: number;
-        nroDpto: number;
-        idLocalidad: number;
-      } 
-    ] | unknown [];
+    domicilios:
+      | [
+          {
+            calle: string;
+            numero: number;
+            cp: number;
+            piso: number;
+            nroDpto: number;
+            idLocalidad: number;
+          }
+        ]
+      | unknown[];
   };
 
   const backend = new BackendMethods();
-
-  useEffect(() => {
-    const traerCategorias = async () => {
-      const res: IUsuario[] = await backend.getAll(
-        `${import.meta.env.VITE_LOCAL}usuarioCliente`
-      );
-      setUsuarios(res);
-    };
-    traerCategorias();
-  }, [actualizacion]);
 
   const mostrarYEsconderAlerta = () => {
     setMostrarAlerta(true);
@@ -77,38 +69,32 @@ export const Register = () => {
     cliente: FormState,
     { setSubmitting }: FormikHelpers<FormState>
   ) => {
-    const usuarioConMismoNombre = usuarios.find(
-      (actual: IUsuario) => actual.userName === cliente.usuario.userName
-    );
-    if (usuarioConMismoNombre) {
-      mostrarUsadoONo();
-    } else {
-      try {
-        // Primero, guardar cada domicilio por separado
-        const domiciliosGuardados = await Promise.all(
-          cliente.domicilios.map(async (domicilio) => {
-            const res = await backend.post(
-              `${import.meta.env.VITE_LOCAL}domicilio`,
-              domicilio
-            );
-            return res;
-          })
-        );
-  
-        // Asignar los domicilios guardados al cliente
-        cliente.domicilios = domiciliosGuardados;
-  
-        // Luego, guardar el cliente
-        const res: ICliente = await backend.post(
-          `${import.meta.env.VITE_LOCAL}cliente/create`,
-          cliente
-        );
-      } catch (error) {
-        console.error(error);
-      }
-      mostrarYEsconderAlerta();
-      setActualizacion(!actualizacion);
+    try {
+      // Primero, guardar cada domicilio por separado
+      const domiciliosGuardados = await Promise.all(
+        cliente.domicilios.map(async (domicilio) => {
+          const res = await backend.post(
+            `${import.meta.env.VITE_LOCAL}domicilio`,
+            domicilio
+          );
+          return res;
+        })
+      );
+
+      // Asignar los domicilios guardados al cliente
+      cliente.domicilios = domiciliosGuardados;
+
+      // Luego, guardar el cliente
+      const res: ICliente = await backend.post(
+        `${import.meta.env.VITE_LOCAL}cliente/create`,
+        cliente as FormState
+      );
+    } catch (error) {
+      console.error(error);
+      mostrarUsadoONo()
     }
+    mostrarYEsconderAlerta();
+    setActualizacion(!actualizacion);
     setSubmitting(false);
   };
 
@@ -127,7 +113,9 @@ export const Register = () => {
       Yup.object().shape({
         calle: Yup.string().required("La calle es obligatoria"),
         cp: Yup.string().required("El codigo postal es obligatorio"),
-        nroDpto: Yup.string().required("El número de departamento es obligatorio"),
+        nroDpto: Yup.string().required(
+          "El número de departamento es obligatorio"
+        ),
         numero: Yup.string().required("El número del domicilio es obligatorio"),
         piso: Yup.string().required("El piso del domicilio es obligatorio"),
         idLocalidad: Yup.number().required("La localidad es obligatoria"), // Validación de idLocalidad
@@ -141,8 +129,9 @@ export const Register = () => {
         const res: IProvincia[] = await backend.getAll(
           `${import.meta.env.VITE_LOCAL}provincia`
         );
-        const uniqueProvincias = Array.from(new Set(res.map(provincia => provincia.id)))
-          .map(id => res.find(provincia => provincia.id === id));
+        const uniqueProvincias = Array.from(
+          new Set(res.map((provincia) => provincia.id))
+        ).map((id) => res.find((provincia) => provincia.id === id));
         setProvincias(uniqueProvincias as IProvincia[]);
       } catch (error) {
         console.error(error);
@@ -156,10 +145,13 @@ export const Register = () => {
       const fetchLocalidades = async () => {
         try {
           const res: ILocalidad[] = await backend.getAll(
-            `${import.meta.env.VITE_LOCAL}localidad/findByProvincia/${selectedProvincia.id}`
+            `${import.meta.env.VITE_LOCAL}localidad/findByProvincia/${
+              selectedProvincia.id
+            }`
           );
-          const uniqueLocalidades = Array.from(new Set(res.map(localidad => localidad.id)))
-            .map(id => res.find(localidad => localidad.id === id));
+          const uniqueLocalidades = Array.from(
+            new Set(res.map((localidad) => localidad.id))
+          ).map((id) => res.find((localidad) => localidad.id === id));
           setLocalidades(uniqueLocalidades as ILocalidad[]);
         } catch (error) {
           console.error(error);
@@ -168,6 +160,7 @@ export const Register = () => {
       fetchLocalidades();
     }
   }, [selectedProvincia]);
+
 
   return (
     <div className="bg-[#bc4749] h-screen flex items-center justify-center relative z-50">
@@ -320,6 +313,8 @@ export const Register = () => {
                     )}
                   </div>
                 </div>
+                
+
               </div>
               <div
                 className={`space-y-5 text-red-500/90 ${
@@ -381,7 +376,10 @@ export const Register = () => {
                             ) || null;
 
                           setFieldValue("localidad", selectedValue);
-                          setFieldValue("domicilios[0].idLocalidad", selectedLocalidad?.id || 0);
+                          setFieldValue(
+                            "domicilios[0].idLocalidad",
+                            selectedLocalidad?.id || 0
+                          );
                         }}
                       >
                         <option value="" label="Selecciona una localidad" />
@@ -413,16 +411,19 @@ export const Register = () => {
                         placeholder="Calle"
                       />
                     </label>
-                    {errors.domicilios?.[0]?.calle && touched.domicilios?.[0]?.calle && (
-                      <div className="pl-2 text-red-500 font-normal text-left text-sm">
-                        {errors.domicilios?.[0]?.calle}
-                      </div>
-                    )}
+                    {errors.domicilios?.[0]?.calle &&
+                      touched.domicilios?.[0]?.calle && (
+                        <div className="pl-2 text-red-500 font-normal text-left text-sm">
+                          {errors.domicilios?.[0]?.calle}
+                        </div>
+                      )}
                   </div>
                   <div className="w-[280.34px]">
                     <label className="form-control w-full max-w-xs">
                       <div className="label italic gap-3">
-                        <span className="label-text text-base">Codigo Postal</span>
+                        <span className="label-text text-base">
+                          Codigo Postal
+                        </span>
                       </div>
                       <Field
                         id="cp"
@@ -432,18 +433,21 @@ export const Register = () => {
                         placeholder="Código Postal"
                       />
                     </label>
-                    {errors.domicilios?.[0]?.cp && touched.domicilios?.[0]?.cp && (
-                      <div className="pl-2 text-red-500 font-normal text-left text-sm">
-                        {errors.domicilios?.[0]?.cp}
-                      </div>
-                    )}
+                    {errors.domicilios?.[0]?.cp &&
+                      touched.domicilios?.[0]?.cp && (
+                        <div className="pl-2 text-red-500 font-normal text-left text-sm">
+                          {errors.domicilios?.[0]?.cp}
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="flex flex-row space-x-5">
                   <div className="w-[280.34px]">
                     <label className="form-control w-full max-w-xs">
                       <div className="label italic gap-3">
-                        <span className="label-text text-base">Número Dpto.</span>
+                        <span className="label-text text-base">
+                          Número Dpto.
+                        </span>
                       </div>
                       <Field
                         id="nroDpto"
@@ -453,16 +457,19 @@ export const Register = () => {
                         placeholder="0"
                       />
                     </label>
-                    {errors.domicilios?.[0]?.nroDpto && touched.domicilios?.[0]?.nroDpto && (
-                      <div className="pl-2 text-red-500 font-normal text-left text-sm">
-                        {errors.domicilios?.[0]?.nroDpto}
-                      </div>
-                    )}
+                    {errors.domicilios?.[0]?.nroDpto &&
+                      touched.domicilios?.[0]?.nroDpto && (
+                        <div className="pl-2 text-red-500 font-normal text-left text-sm">
+                          {errors.domicilios?.[0]?.nroDpto}
+                        </div>
+                      )}
                   </div>
                   <div className="w-[280.34px]">
                     <label className="form-control w-full max-w-xs">
                       <div className="label italic gap-3">
-                        <span className="label-text text-base">Número Domicilio.</span>
+                        <span className="label-text text-base">
+                          Número Domicilio.
+                        </span>
                       </div>
                       <Field
                         id="numero"
@@ -472,11 +479,12 @@ export const Register = () => {
                         placeholder="0"
                       />
                     </label>
-                    {errors.domicilios?.[0]?.numero && touched.domicilios?.[0]?.numero && (
-                      <div className="pl-2 text-red-500 font-normal text-left text-sm">
-                        {errors.domicilios?.[0]?.numero}
-                      </div>
-                    )}
+                    {errors.domicilios?.[0]?.numero &&
+                      touched.domicilios?.[0]?.numero && (
+                        <div className="pl-2 text-red-500 font-normal text-left text-sm">
+                          {errors.domicilios?.[0]?.numero}
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div className="flex flex-row space-x-5">
@@ -493,11 +501,12 @@ export const Register = () => {
                         placeholder="0"
                       />
                     </label>
-                    {errors.domicilios?.[0]?.piso && touched.domicilios?.[0]?.piso && (
-                      <div className="pl-2 text-red-500 font-normal text-left text-sm">
-                        {errors.domicilios?.[0]?.piso}
-                      </div>
-                    )}
+                    {errors.domicilios?.[0]?.piso &&
+                      touched.domicilios?.[0]?.piso && (
+                        <div className="pl-2 text-red-500 font-normal text-left text-sm">
+                          {errors.domicilios?.[0]?.piso}
+                        </div>
+                      )}
                   </div>
                 </div>
                 <button
