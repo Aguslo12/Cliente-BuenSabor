@@ -4,7 +4,6 @@ import { useCarrito } from "../../../hooks/useContext";
 import { BackendMethods } from "../../../services/BackendClient";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { BsFillCartFill } from "react-icons/bs";
-import { IDetallePedidoDos } from "../../../types/DetallePedidoDos";
 import { IDetallePedido } from "../../../types/DetallePedido";
 
 const CardArticuloInsumo: FC<IArticuloInsumo> = ({
@@ -38,7 +37,7 @@ const CardArticuloInsumo: FC<IArticuloInsumo> = ({
 
   const agregar = () => {
     if (data) {
-      const detalle: IDetallePedido= {
+      const detalle: IDetallePedido = {
         id: 0,
         eliminado: false,
         cantidad: 1,
@@ -101,9 +100,6 @@ const CardArticuloInsumo: FC<IArticuloInsumo> = ({
                   <FaPlus />
                 </button>
               </div>
-              {/* <h1 className="bg-custom-green h-12 p-2 items-center flex font-medium text-2xl w-14 justify-center text-gray-800">
-              <BsFillCartFill />
-            </h1> */}
               <div>
                 <div
                   className={`bg-custom-green m-2  items-center flex flex-row font-medium text-2xl  justify-center transition-all

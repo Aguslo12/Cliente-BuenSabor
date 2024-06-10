@@ -8,7 +8,6 @@ const Tienda = () => {
         <>
             <ContainerCategoria />
             <ContainerArticulos />
-            <div className='w-full flex justify-center bg-red-600 text-3xl font-semibold font-mono text-white p-2'>PROMOS DISPONIBLES</div>
             <ContainerPromocion/>
         </>
     )

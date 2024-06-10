@@ -11,8 +11,6 @@ import { useEffect } from "react";
 export const Navbar = () => {
   const { cliente, getCliente } = useSucursalContext();
 
-
-
   const desLoguearte = () => {
     sessionStorage.removeItem("cliente");
   };
@@ -24,9 +22,8 @@ export const Navbar = () => {
   }
 
   useEffect(() => {
-    getCliente(user)
-  }, [])
-  
+    getCliente(user);
+  }, []);
 
   /*
   useEffect(() => {
@@ -87,14 +84,17 @@ export const Navbar = () => {
               >
                 <div className="flex text-red-500 text-[40px] rounded-full border-red-500 border-[3px]">
                   <p>
-                    <FaUser />
+                    {user?.imagenCliente === null ? (
+                      <FaUser />
+                    ) : (
+                      <img src={user?.imagenCliente.url} alt="" />
+                    )}
                   </p>
                 </div>
               </div>
-
               <ul
                 tabIndex={0}
-                className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+                className="menu menu-md dropdown-content mt-1 z-[1] p-2 size-72 h-[245px] shadow bg-base-100 rounded-box"
               >
                 <p className="flex justify-center text-base rounded font-bold p-2">
                   {user?.usuario.userName}

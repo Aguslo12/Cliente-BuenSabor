@@ -17,8 +17,8 @@ const CardCategoria: FC<ICategoriaShort> = ({ denominacion, eliminado, esInsumo,
     }
 
     return (
-        <div className={`rounded-sm cursor-pointer m-5 p-5 flex flex-col items-center justify-start transition-all hover:bg-slate-100 hover:text-red-500
-        ${idCategoria === id && 'bg-slate-100 text-red-500'}`}
+        <div className={` cursor-pointer m-5 p-5 flex flex-col items-center justify-center hover:bg-slate-100 hover:text-red-500
+        ${idCategoria === id && 'bg-slate-100 text-red-600 border-red-600 rounded-x'}`}
             onClick={seleccionarCategoria}>
             <span className='flex flex-row items-center justify-center text-center px-4'>
                 <PiBowlFood className='text-xl mx-2' />

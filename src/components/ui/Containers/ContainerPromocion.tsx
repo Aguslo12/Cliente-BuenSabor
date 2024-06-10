@@ -3,6 +3,7 @@ import { BackendMethods } from "../../../services/BackendClient";
 import { IPromosShort } from "../../../types/ShortDtos/PromoShort";
 import { CardPromocion } from "../Cards/CardPromocion";
 import { useSucursalContext } from "../../../hooks/useContext";
+import { FaAngleDoubleDown } from "react-icons/fa";
 
 export const ContainerPromocion = () => {
   const backend = new BackendMethods();
@@ -22,31 +23,34 @@ export const ContainerPromocion = () => {
   }, []);
 
   return (
-    <div className="flex flex-wrap justify-center items-center p-5 m-10">
+    <div className="flex flex-wrap justify-center items-center">
       {promociones.length <= 0 ? (
-        <div className="h-[430px] items-center flex pb-20 justify-center">
-          <div className="text-4xl bg-red-600 text-white rounded p-5">
-            No hay promociones disponibles
-          </div>
+        <div className="w-screen flex justify-center bg-red-600 text-3xl font-semibold font-mono text-white p-2">
+         X NO HAY PROMOS DISPONIBLES X
         </div>
       ) : (
-        promociones.map((promo, index) => (
-          <CardPromocion
-            denominacion={promo.denominacion}
-            descripcionDescuento={promo.descripcionDescuento}
-            detalles={promo.detalles}
-            eliminado={promo.eliminado}
-            fechaDesde={promo.fechaDesde}
-            fechaHasta={promo.fechaHasta}
-            horaDesde={promo.horaDesde}
-            horaHasta={promo.horaHasta}
-            id={promo.id}
-            imagenes={promo.imagenes}
-            precioPromocional={promo.precioPromocional}
-            tipoPromocion={promo.tipoPromocion}
-            key={index}
-          />
-        ))
+        <div>
+          <div className="w-screen flex justify-center bg-red-600 text-3xl font-semibold font-mono text-white p-2">
+          <FaAngleDoubleDown/> PROMOS DISPONIBLES <FaAngleDoubleDown/>
+          </div>
+          {promociones.map((promo, index) => (
+            <CardPromocion
+              denominacion={promo.denominacion}
+              descripcionDescuento={promo.descripcionDescuento}
+              detalles={promo.detalles}
+              eliminado={promo.eliminado}
+              fechaDesde={promo.fechaDesde}
+              fechaHasta={promo.fechaHasta}
+              horaDesde={promo.horaDesde}
+              horaHasta={promo.horaHasta}
+              id={promo.id}
+              imagenes={promo.imagenes}
+              precioPromocional={promo.precioPromocional}
+              tipoPromocion={promo.tipoPromocion}
+              key={index}
+            />
+          ))}
+        </div>
       )}
     </div>
   );

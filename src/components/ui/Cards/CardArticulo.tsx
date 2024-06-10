@@ -40,13 +40,12 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
 
   const agregar = () => {
     if (data) {
-      console.log("DATA");
-      console.log(`DATA ${data.denominacion}`);
       const detalle: IDetallePedido = {
         id: 0,
         eliminado: false,
         cantidad: 1,
         articulo: data,
+        promocion: null,
         subTotal: data.precioVenta,
       };
       addCarrito(detalle);
@@ -61,6 +60,7 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
         cantidad,
         eliminado: false,
         articulo: data,
+        promocion: null,
         subTotal: data.precioVenta,
       };
       removeItemCarrito(detalle);
@@ -80,7 +80,6 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
       <div className="">
         <div className="flex flex-col mt-2 justify-center items-center">
           <h2 className="card-title text-3xl">{denominacion}</h2>
-          <p>{tiempoEstimadoMinutos}</p>
           <p className="text-red-600 font-bold">${precioVenta}</p>
         </div>
 

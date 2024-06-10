@@ -5,6 +5,7 @@ import { IDetallePedido } from "../types/DetallePedido";
 interface CartContextType {
   cart: IDetallePedido[];
   addCarrito: (articulo: IDetallePedido) => void;
+  addCarritoPromo: (promo: IDetallePedido) => void;
   removeItemCarrito: (articulo: IDetallePedido) => void;
   limpiarCarrito: () => void;
   removeAllItemCarrito: (articulo: IDetallePedido) => void;
@@ -19,7 +20,7 @@ export function CarritoContextProvider({ children }: { children: ReactNode }) {
 
   const addCarrito = (product: IDetallePedido) => {
     setCart(prevCart => {
-      const existingProductIndex = prevCart.findIndex(item => item.articulo.id === product.articulo.id);
+      const existingProductIndex = prevCart.findIndex(item => item.articulo?.id === product.articulo?.id);
       if (existingProductIndex >= 0) {
         const updatedCart = prevCart.map((item, index) =>
           index === existingProductIndex ? { ...item, cantidad: item.cantidad + 1 } : item
@@ -31,9 +32,23 @@ export function CarritoContextProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const addCarritoPromo = (promo: IDetallePedido) => {
+    setCart(prevCart => {
+      const existingPromoIndex = prevCart.findIndex(item => item.promocion?.id === promo.promocion?.id);
+      if (existingPromoIndex >= 0) {
+        const updatedCart = prevCart.map((item, id) => 
+          id === existingPromoIndex ? { ...item, cantidad: item.cantidad + 1 } : item
+        );
+        return updatedCart;
+      } else {
+        return [...prevCart, { ...promo, cantidad: 1}]
+      }
+    })
+  }
+
   const removeItemCarrito = (product: IDetallePedido) => {
     setCart(prevCart => {
-      const existingProductIndex = prevCart.findIndex(item => item.articulo.id === product.articulo.id);
+      const existingProductIndex = prevCart.findIndex(item => item.articulo?.id === product.articulo?.id);
       if (existingProductIndex >= 0) {
         const existingProduct = prevCart[existingProductIndex];
         if (existingProduct.cantidad > 1) {
@@ -50,7 +65,7 @@ export function CarritoContextProvider({ children }: { children: ReactNode }) {
   };
 
   const removeAllItemCarrito = (product: IDetallePedido) => {
-    setCart(prevCart => prevCart.filter(item => item.articulo.id !== product.articulo.id));
+    setCart(prevCart => prevCart.filter(item => item.articulo?.id !== product.articulo?.id));
   };
 
   const limpiarCarrito = () => {
@@ -58,7 +73,7 @@ export function CarritoContextProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <CartContext.Provider value={{ cart, addCarrito, removeItemCarrito, limpiarCarrito, removeAllItemCarrito }}>
+    <CartContext.Provider value={{ cart, addCarrito, removeItemCarrito, limpiarCarrito, removeAllItemCarrito, addCarritoPromo }}>
       {children}
     </CartContext.Provider>
   );

@@ -16,7 +16,21 @@ export const ButtonCarrito = () => {
   }, [cart]);
 
   const calcularTotalProductos = () => {
-    return cart.reduce((acc, item) => acc + item.cantidad * item.articulo.precioVenta, 0);
+    const sumaArticulo = cart.reduce((acc, item) => {
+      if (item.articulo) {
+        return (acc + item.cantidad * item.articulo.precioVenta)
+      } else {
+        return acc
+      }
+    },0)
+    const sumaPromo = cart.reduce((acc, item) => {
+      if (item.promocion) {
+        return (acc + item.cantidad * item.promocion.precioPromocional)
+      } else {
+        return acc
+      }
+    } ,0)
+    return (sumaArticulo + sumaPromo);
   };
 
   return (

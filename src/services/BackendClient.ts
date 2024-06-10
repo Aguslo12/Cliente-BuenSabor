@@ -77,14 +77,14 @@ export abstract class BackendClient<T> extends AbstractBackendClient<T> {
     return this.request(path, options);
   }
 
-  async postConImagen(url: string, entity: T, files: File) {
+  async postConImagen(url: string, entity: T, file: File) {
     const formData = new FormData();
     const blob = new Blob([JSON.stringify(entity)], {
       type: "application/json",
     });
     formData.append("entity", blob);
 
-      formData.append("files", files);
+      formData.append("file", file);
 
     try {
       const response = await fetch(url, {

@@ -9,6 +9,7 @@ import CardArticuloInsumo from "../Cards/CardArticuloInsumo";
 const ContainerArticulos = () => {
   const backend = new BackendMethods();
 
+
   const [articulosManufacturados, setArticulosManufacturados] = useState<
     IArticuloManufacturado[]
   >([]);

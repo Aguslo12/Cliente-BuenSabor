@@ -58,10 +58,10 @@ const CardSucursal: FC<ISucursalShort> = ({
         ))}
       </div>
       <div className="flex w-full">
-        <h1 className="flex text-black font-semibold p-3 text-left w-full">
+        <h1 className="flex text-black group-hover:text-red-600 font-semibold p-3 text-left w-full">
           {nombre}
         </h1>
-        <p className="flex text-right items-center p-3">
+        <p className="flex group-hover:text-red-600 text-right items-center p-3">
           <FaAngleRight />
         </p>
       </div>

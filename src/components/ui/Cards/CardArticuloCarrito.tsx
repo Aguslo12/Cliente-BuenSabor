@@ -18,12 +18,12 @@ export const CardArticuloCarrito = () => {
             return (
               prod.cantidad !== 0 && (
                 <div
-                  key={prod.articulo.id}
+                  key={prod.articulo?.id}
                   className="card card-compact w-96 shadow-xl bg-white m-10 h-full border-[#2f302b] "
                 >
                   <figure>
                     <img
-                      src={prod.articulo.imagenes[0].url}
+                      src={prod.articulo?.imagenes[0].url}
                       className="h-44 w-full"
                     />
                   </figure>
@@ -32,7 +32,7 @@ export const CardArticuloCarrito = () => {
                     className="collapse collapse-plus border rounded-t-none bg-white text-black border-white"
                   >
                     <div className="collapse-title text-xl font-medium">
-                      {prod.articulo.denominacion}{" "}
+                      {prod.articulo?.denominacion}{" "}
                       <button
                         className=" p-2 bg-white hover:bg-white text-red-600  border-none rounded-lg text-base shadow disabled:bg-white disabled:text-slate-300"
                         onClick={() => eliminar(prod)}
@@ -44,7 +44,7 @@ export const CardArticuloCarrito = () => {
                       <p className="my-1">
                         Precio:{" "}
                         <b className="text-lime-600">
-                          ${prod.articulo.precioVenta}
+                          ${prod.articulo?.precioVenta}
                         </b>
                       </p>
                       <p className="my-1">

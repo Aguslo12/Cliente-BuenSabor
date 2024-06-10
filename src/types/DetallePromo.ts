@@ -3,7 +3,9 @@ import { IArticuloManufacturado } from "./ArticuloManufacturado";
 
 export interface IDetallePromo {
   id: number;
-  cantidad: number;
+  eliminado:boolean;
+  descripcionDescuento: string;
+  tipoPromocion: string;
   articulosManufacturados: IArticuloManufacturado | undefined;
   insumos: IArticuloInsumo | undefined;
 }

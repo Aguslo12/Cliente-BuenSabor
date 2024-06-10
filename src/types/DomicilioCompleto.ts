@@ -1,5 +1,7 @@
+import { ILocalidad } from "./Domicilio/Localidad";
 
-export interface IDomicilio {
+
+export interface IDomicilioCompleto {
     id: number,
     nombre: string
     eliminado: boolean,
@@ -8,5 +10,5 @@ export interface IDomicilio {
     cp: number,
     piso: number,
     nroDpto: number,
-    idLocalidad: number,
+    localidad: ILocalidad,
 }

@@ -9,12 +9,15 @@ import { IHoraEstimadaFinalizacion } from "../../../types/HoraEstimadaFinalizaci
 import { IEmpleado } from "../../../types/Empleado";
 import { Link } from "react-router-dom";
 import { IDomicilio } from "../../../types/Domicilio/Domicilio";
+import { IDomicilioCompleto } from "../../../types/DomicilioCompleto";
+import { IDomicilioDto } from "../../../types/CreateDtos/DomicilioDto";
 
 export const ContainerCarrito = () => {
   const { cart, limpiarCarrito } = useCarrito();
   const backend = new BackendMethods();
   const { suc, pedidoEnviado } = useSucursalContext();
   const [direccion, SetDireccion] = useState();
+  const [domicilio, setDomicilio] = useState<DomicilioDto>()
 
   const storedCliente = sessionStorage.getItem("cliente");
   let client: ICliente | null = null;
@@ -36,7 +39,7 @@ export const ContainerCarrito = () => {
     estado: string;
     tipoEnvio: string;
     idCliente: number | undefined;
-    domicilio: IDomicilio | undefined;
+    domicilio: DomicilioDto | undefined;
     idSucursal: number | undefined;
     factura: IFactura | null;
     formaPago: string;
@@ -51,11 +54,31 @@ export const ContainerCarrito = () => {
   };
 
   const calcularTotalProductos = () => {
-    return cart.reduce(
-      (acc, item) => acc + item.cantidad * item.articulo.precioVenta,
-      0
-    );
+    const sumaArticulo = cart.reduce((acc, item) => {
+      if (item.articulo) {
+        return (acc + item.cantidad * item.articulo.precioVenta)
+      } else {
+        return acc
+      }
+    },0)
+    const sumaPromo = cart.reduce((acc, item) => {
+      if (item.promocion) {
+        return (acc + item.cantidad * item.promocion.precioPromocional)
+      } else {
+        return acc
+      }
+    } ,0)
+    return (sumaArticulo + sumaPromo);
   };
+
+  type DomicilioDto = {
+    calle: string;
+    cp: number;
+    idLocalidad: number;
+    nroDpto: number;
+    numero: number;
+    piso: number;
+  } 
 
   const facturaHardcodeada: IFactura = {
     id: 0,
@@ -69,6 +92,27 @@ export const ContainerCarrito = () => {
     totalVenta: 1500.0,
   };
 
+  useEffect(() => {
+    if (client) {
+      const dirActual: IDomicilioCompleto = client.domicilios.find((domicilio) => domicilio.calle === direccion);
+      console.log(dirActual)
+      if (dirActual) {
+        setDomicilio({
+          calle: dirActual.calle,
+          cp: dirActual.cp,
+          idLocalidad: dirActual.localidad.id,
+          nroDpto: dirActual.nroDpto,
+          numero: dirActual.numero,
+          piso: dirActual.piso,
+        });
+      }
+    }
+    
+  }, [direccion]);
+
+  console.log("EL DOMICILIO PERRI")
+  console.log(domicilio)
+
   const [formState, setFormState] = useState<FormState>({
     id: 0,
     detallesPedido: cart.map(
@@ -78,7 +122,8 @@ export const ContainerCarrito = () => {
           eliminado: item.eliminado,
           subTotal: item.subTotal,
           cantidad: item.cantidad,
-          idArticulo: item.articulo.id,
+          idPromocion: 0,
+          idArticulo: item.articulo?.id,
         } as unknown as IDetallePedidoIdArt)
     ),
     fechaPedido: null,
@@ -88,7 +133,7 @@ export const ContainerCarrito = () => {
     formaPago: "EFECTIVO",
     estado: "PREPARACION",
     tipoEnvio: "DELIVERY",
-    domicilio: client?.domicilios.find((domicilio) => domicilio.calle === direccion), /* HAY QUE CAMBIAR ESTO, NO FUNCIONA PORQUE CLIENTE TRAE DIRECCION COMPLETA Y EN EL PEDIDO SE NECESITA DOMICILIODTO CON IDLOCALIDAD NO LOCALIDAD COMPLETA*/
+    domicilio: domicilio, 
     factura: facturaHardcodeada,
     idSucursal: suc?.id,
     horaEstimadaFinalizacion: null,
@@ -97,6 +142,8 @@ export const ContainerCarrito = () => {
   });
 
   useEffect(() => {
+    console.log("EL DOMICILIO PERRITOOOO")
+    console.log(domicilio)
     setFormState((prevState) => ({
       ...prevState,
       detallesPedido: cart.map(
@@ -106,14 +153,15 @@ export const ContainerCarrito = () => {
             eliminado: item.eliminado,
             subTotal: item.subTotal,
             cantidad: item.cantidad,
-            idArticulo: item.articulo.id,
+            idPromocion: item.promocion?.id || 0,
+            idArticulo: item.articulo?.id,
           } as unknown as IDetallePedidoIdArt)
       ),
       total: calcularTotalProductos(),
       idCliente: client?.id,
-      
+      domicilio: domicilio
     }));
-  }, [cart, direccion]);
+  }, [cart, direccion, domicilio]);
 
   const postPedido = async () => {
     console.log(formState);
