@@ -12,6 +12,7 @@ export const Login = () => {
   const navigate = useNavigate();
   const [passwordNo, setPasswordNo] = useState(false);
   const { getCliente } = useSucursalContext();
+  const [esperar, setEsperar] = useState<boolean>(true);
 
   const backend = new BackendMethods();
 
@@ -21,6 +22,13 @@ export const Login = () => {
       setPasswordNo(false);
     }, 3000);
   };
+
+  const hacerEsperarIngreso = () => {
+    setEsperar(false)
+    if (passwordNo) {
+      setEsperar(true)
+    }
+  }
 
   const schema = Yup.object().shape({
     userName: Yup.string().required("El nombre de usuario es obligatorio"),
@@ -111,13 +119,22 @@ export const Login = () => {
                     {errors.clave}
                   </div>
                 )}
-
-                <button
+                {esperar ? (
+                  <button
                   type="submit"
-                  className="btn btn-outline text-xl font-light text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-full"
+                  className={`btn btn-outline text-xl font-light transition-all text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-full`}
+                  onClick={hacerEsperarIngreso}
                 >
                   Ingresar
                 </button>
+                ) : (
+                  <button
+                  type="submit"
+                  className={`btn btn-outline text-xl font-light disabled bg-gray-500 text-white w-full`}
+                >
+                  Ingresando...
+                </button>
+                )}
                 {passwordNo && (
                   <div role="alert" className="alert alert-error">
                   <svg

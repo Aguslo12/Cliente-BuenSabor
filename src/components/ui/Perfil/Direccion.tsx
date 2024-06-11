@@ -1,24 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ICliente } from "../../../types/Cliente";
 import { AiOutlineEdit } from "react-icons/ai";
 import { FaRegTrashAlt } from "react-icons/fa";
-
-const storedCliente = sessionStorage.getItem("cliente");
-let client: ICliente | null = null;
-console.log(client)
-
-if (storedCliente) {
-  client = JSON.parse(storedCliente) as ICliente;
-}
+import { ModalDireccion } from "../Modals/ModalDireccion";
 
 const Direccion = () => {
+  const storedCliente = sessionStorage.getItem("cliente");
+  let client: ICliente | null = null;
+
+  if (storedCliente) {
+    client = JSON.parse(storedCliente) as ICliente;
+  }
+
+  const [ open, setOpen ] = useState<boolean>(false)
+
+  const openModal = () => setOpen(true);
+  const closeModal = () => setOpen(false);
+
   return (
     <div className="flex text-black w-[1600px] text-3xl ml-10 pt-10 flex-col">
-        <div className="flex justify-between">
-            <p>Mis direcciones</p>
-            <button className="btn btn-ghost btn-accent bg-green-600 text-white hover:text-green-600 hover:border-green-600 mr-10">Añadir dirección +</button>
-        </div>
-      
+      <div className="flex justify-between">
+        <p>Mis direcciones</p>
+        <button className="btn btn-ghost btn-accent bg-green-600 text-white hover:text-green-600 hover:border-green-600 mr-10" onClick={openModal}>
+          Añadir dirección +
+        </button>
+      </div>
+
       <div className="flex overflow-x-auto w-[1600px] justify-center mt-10 ">
         <table className="table table-zebra w-full rounded-lg shadow-lg">
           <thead className="text-base">
@@ -58,6 +65,11 @@ const Direccion = () => {
                 </tr>
               </tbody>
             ))
+          )}
+          {open && (
+            <div className="fixed z-50 inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+            <ModalDireccion closeModal={closeModal}/>
+          </div>
           )}
         </table>
       </div>

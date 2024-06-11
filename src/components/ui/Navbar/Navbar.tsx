@@ -7,6 +7,7 @@ import { IoMdSettings } from "react-icons/io";
 import { IoTicket } from "react-icons/io5";
 import { MdLogout } from "react-icons/md";
 import { useEffect } from "react";
+import { PiList } from "react-icons/pi";
 
 export const Navbar = () => {
   const { cliente, getCliente } = useSucursalContext();
@@ -21,59 +22,69 @@ export const Navbar = () => {
     user = JSON.parse(storedCliente) as ICliente;
   }
 
+
   useEffect(() => {
     getCliente(user);
   }, []);
 
-  /*
-  useEffect(() => {
-    const traerSucursales = async () => {
-      try {
-        const res: IEmpresa = await backend.getById(`${import.meta.env.VITE_LOCAL}empresa/sucursales/${idEmpresa}`) as unknown as IEmpresa;
-        const sucursales: ISucursal[] = res.sucursales;
-        SetSucursales(sucursales);
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    traerSucursales();
-  }, [categoria])
-
-
-
-  const selectSucursal = (id: number) => {
-    dispatch(setGlobalSucursal(id))
-  }
-  */
-
   return (
     <>
-      <div className="fixed navbar bg-white border-b-2 text-colorSec z-50 p-4  shadow">
+      <div className="fixed flex navbar bg-white border-b-2 text-colorSec z-50 p-4 shadow">
         <div className="navbar-start">
           <Link to={"/"}>
             {" "}
-            <button className="text-red-600 font-bold text-3xl">
+            <button className="text-red-600 font-bold text-xl md:text-3xl">
               {" "}
               El Buen Sabor
             </button>
           </Link>
         </div>
 
-        {/* 
-        {idEmpresa &&
-          <>
-            <div className="dropdown">
-              <div tabIndex={0} role="button" className="select select-bordered w-72 items-center">Selecciona sucursal </div>
-              <ul tabIndex={0} className="dropdown-content  z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                {sucursales.map((sucursal) => (
-                  <li className="cursor-pointer p-2 my-1 rounded border" onClick={() => selectSucursal(sucursal.id)}>{sucursal.nombre}</li>
-                ))}
-              </ul>
-            </div>
-          </>
-        }
-        */}
-        <div className="navbar-end mr-3">
+        <div className="dropdown md:hidden dropdown-end">
+          <button tabIndex={0} role="button" className="flex justify-center ml-[140px] text-red-600 text-2xl" >
+                <PiList/>
+          </button>
+          <ul
+            tabIndex={0}
+            className="menu menu-sm dropdown-content mt-1 z-[1] p-2 h-[220px] shadow bg-base-100 rounded-box"
+          >
+            <p className="flex justify-center text-base rounded font-bold p-2">
+              {user?.usuario.userName}
+            </p>
+
+            <li>
+              <Link
+                to={"/miPerfil"}
+                className="flex justify-center text-sm border-black text-black hover:bg-white hover:text-red-500/80 mt-3 p-2 hover:border-red-500 border-[1px]"
+              >
+                <IoMdSettings />
+                Mi Perfil <IoMdSettings />
+              </Link>
+            </li>
+            <li>
+              <Link
+                to={"/misPedidos"}
+                className="flex justify-center text-sm border-black text-black hover:bg-white hover:text-red-500/80 mt-3 p-2 hover:border-red-500 border-[1px]"
+              >
+                <IoTicket />
+                Pedidos
+                <IoTicket />
+              </Link>
+            </li>
+            <li>
+              <Link
+                to={"/iniciarSesion"}
+                onClick={desLoguearte}
+                className="flex justify-center text-sm bg-red-500 text-white hover:bg-white hover:text-red-500/80 mt-3 p-2 hover:border-red-500 border-[1px]"
+              >
+                Cerrar Sesión
+                <MdLogout />
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div className="navbar-end hidden md:flex mr-3">
           <ButtonCarrito />
           {user || cliente ? (
             <div className="ml-3 dropdown dropdown-end">

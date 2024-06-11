@@ -8,16 +8,15 @@ import { IFactura } from "../../../types/Factura";
 import { IHoraEstimadaFinalizacion } from "../../../types/HoraEstimadaFinalizacion";
 import { IEmpleado } from "../../../types/Empleado";
 import { Link } from "react-router-dom";
-import { IDomicilio } from "../../../types/Domicilio/Domicilio";
 import { IDomicilioCompleto } from "../../../types/DomicilioCompleto";
-import { IDomicilioDto } from "../../../types/CreateDtos/DomicilioDto";
+import CheckoutMP from "../CheckoutMP/CheckoutMP";
 
 export const ContainerCarrito = () => {
   const { cart, limpiarCarrito } = useCarrito();
   const backend = new BackendMethods();
   const { suc, pedidoEnviado } = useSucursalContext();
   const [direccion, SetDireccion] = useState();
-  const [domicilio, setDomicilio] = useState<DomicilioDto>()
+  const [domicilio, setDomicilio] = useState<number>();
 
   const storedCliente = sessionStorage.getItem("cliente");
   let client: ICliente | null = null;
@@ -39,7 +38,7 @@ export const ContainerCarrito = () => {
     estado: string;
     tipoEnvio: string;
     idCliente: number | undefined;
-    domicilio: DomicilioDto | undefined;
+    idDomicilio: number | undefined;
     idSucursal: number | undefined;
     factura: IFactura | null;
     formaPago: string;
@@ -48,7 +47,7 @@ export const ContainerCarrito = () => {
     totalCosto: number;
     empleado: IEmpleado | null;
   };
-  
+
   const cambiarDireccion = (event) => {
     SetDireccion(event.target.value);
   };
@@ -56,29 +55,20 @@ export const ContainerCarrito = () => {
   const calcularTotalProductos = () => {
     const sumaArticulo = cart.reduce((acc, item) => {
       if (item.articulo) {
-        return (acc + item.cantidad * item.articulo.precioVenta)
+        return acc + item.cantidad * item.articulo.precioVenta;
       } else {
-        return acc
+        return acc;
       }
-    },0)
+    }, 0);
     const sumaPromo = cart.reduce((acc, item) => {
       if (item.promocion) {
-        return (acc + item.cantidad * item.promocion.precioPromocional)
+        return acc + item.cantidad * item.promocion.precioPromocional;
       } else {
-        return acc
+        return acc;
       }
-    } ,0)
-    return (sumaArticulo + sumaPromo);
+    }, 0);
+    return sumaArticulo + sumaPromo;
   };
-
-  type DomicilioDto = {
-    calle: string;
-    cp: number;
-    idLocalidad: number;
-    nroDpto: number;
-    numero: number;
-    piso: number;
-  } 
 
   const facturaHardcodeada: IFactura = {
     id: 0,
@@ -88,30 +78,23 @@ export const ContainerCarrito = () => {
     mpMerchantOrderId: 987654321,
     mpPreferenceId: "abcdefg12345",
     mpPaymentType: "credit_card",
-    formaPago: "MERCADO_PAGO",
+    formaPago: "EFECTIVO",
     totalVenta: 1500.0,
   };
 
   useEffect(() => {
     if (client) {
-      const dirActual: IDomicilioCompleto = client.domicilios.find((domicilio) => domicilio.calle === direccion);
-      console.log(dirActual)
+      const dirActual: IDomicilioCompleto = client.domicilios.find(
+        (domicilio) => domicilio.calle === direccion
+      );
       if (dirActual) {
-        setDomicilio({
-          calle: dirActual.calle,
-          cp: dirActual.cp,
-          idLocalidad: dirActual.localidad.id,
-          nroDpto: dirActual.nroDpto,
-          numero: dirActual.numero,
-          piso: dirActual.piso,
-        });
+        setDomicilio(dirActual.id);
+        console.log(dirActual.id)
       }
+      console.log(`DIRECCION ACTUAL`);
+      console.log(dirActual)
     }
-    
   }, [direccion]);
-
-  console.log("EL DOMICILIO PERRI")
-  console.log(domicilio)
 
   const [formState, setFormState] = useState<FormState>({
     id: 0,
@@ -133,7 +116,7 @@ export const ContainerCarrito = () => {
     formaPago: "EFECTIVO",
     estado: "PREPARACION",
     tipoEnvio: "DELIVERY",
-    domicilio: domicilio, 
+    idDomicilio: domicilio,
     factura: facturaHardcodeada,
     idSucursal: suc?.id,
     horaEstimadaFinalizacion: null,
@@ -142,8 +125,6 @@ export const ContainerCarrito = () => {
   });
 
   useEffect(() => {
-    console.log("EL DOMICILIO PERRITOOOO")
-    console.log(domicilio)
     setFormState((prevState) => ({
       ...prevState,
       detallesPedido: cart.map(
@@ -159,18 +140,17 @@ export const ContainerCarrito = () => {
       ),
       total: calcularTotalProductos(),
       idCliente: client?.id,
-      domicilio: domicilio
+      idDomicilio: domicilio,
     }));
   }, [cart, direccion, domicilio]);
 
   const postPedido = async () => {
-    console.log(formState);
     try {
       const res: IPedido = await backend.post(
         `${import.meta.env.VITE_LOCAL}pedido`,
         formState
       );
-      console.log("PEDIDO");
+      console.log("SANCHO PANZA");
       console.log(res);
       if (res.estado === "RECHAZADO") {
         pedidoEnviado(3);
@@ -189,45 +169,50 @@ export const ContainerCarrito = () => {
       <div className="card card-compact w-96 shadow-xl bg-white text-black">
         <div className="card-body h-full">
           <div className="flex justify-center">
-            <h1 className="card-title text-2xl w-28 justify-center bg-red-500 p-1 rounded-lg text-white r">
+            <h1 className="card-title text-2xl w-28 justify-center bg-red-500 p-1 rounded-lg text-white">
               Carrito
             </h1>
           </div>
-
-          <p className="text-base flex justify-between my-8">
-            <b className="flex justify-start">Productos:</b>{" "}
-            <span className="flex justify-end">
-              {" "}
-              $ {calcularTotalProductos()}
+          <div className="text-base flex justify-between my-8">
+            <b>Total:</b>{" "}
+            <span className="flex">
+              $ <p className="underline decoration-2 decoration-red-500"> {calcularTotalProductos()}</p>
             </span>
-          </p>
-          <p className="text-base flex justify-center font-bold">
+          </div>
+          <div className="text-base flex justify-center text-center font-bold">
+          <p >
             Dirección de envío:
           </p>
-          <select className="flex select select-bordered my-3 bg-red-600 text-white font-semibold text-center justify-center" onChange={cambiarDireccion}>
+          </div>
+          <select
+            className="flex select select-bordered mb-4 bg-red-600 text-white font-semibold text-center justify-center"
+            onChange={cambiarDireccion}
+          >
             <option disabled selected>
               Elegir dirección
-            </option >
-            {client?.domicilios.map((domicilio)=>(
-              <option key={domicilio.id} value={domicilio.calle}>{domicilio.calle}</option>
+            </option>
+            {client?.domicilios.map((domicilio) => (
+              <option key={domicilio.id} value={domicilio.calle}>
+                {domicilio.calle}
+              </option>
             ))}
           </select>
           <hr />
-          <p className="text-base flex justify-between my-2">
-            <b className="flex justify-start">Total: </b>{" "}
-            <span className="flex justify-end">
-              {" "}
-              $ {calcularTotalProductos()}
-            </span>
-          </p>
-          <div className="card-actions mt-5">
+          <div className="card-actions mt-5 w-full">
             {client ? (
-              <button
-                className="btn btn-error text-white bg-red-600 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-full"
-                onClick={postPedido}
-              >
-                Comprar
-              </button>
+              formState.idDomicilio === undefined ? (
+                <div className="w-full text-center text-white bg-green-500/60 p-3 rounded-lg"> Coloque un domicilio</div>
+              ) : (
+                <div className="w-full">
+                <button
+                  className="btn btn-success bg-green-600/90 border-green-600/90 text-white w-full"
+                  onClick={postPedido}
+                >
+                  Pagar en efectivo
+                </button>
+                <CheckoutMP pedido={formState} />
+              </div>
+              )
             ) : (
               <Link to={"/iniciarSesion"} className="w-full">
                 <button className="btn btn-primary w-full">

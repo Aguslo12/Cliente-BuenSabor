@@ -13,10 +13,6 @@ export const CardPedido: FC<IPedido> = ({
   detallesPedido,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  detallesPedido.map((pedido) => {
-    console.log("MALARDO MAL")
-    console.log(pedido.articuloManufacturado)
-  })
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -90,7 +86,7 @@ export const CardPedido: FC<IPedido> = ({
             </button>
             <h3 className="font-bold text-lg flex justify-center p-7">Artículos Pedido Nro {id}</h3>
             <div className="px-1 space-y-4 py-5 bg-white rounded text-black">
-            {detallesPedido.map((pedido: IDetallePedidoDos)=> (
+            {detallesPedido.map((pedido: IDetallePedido)=> (
                 pedido.articuloInsumo === null || pedido.articuloManufacturado ? (
                     <p className="flex w-full justify-between px-2  font-semibold">{pedido.articuloManufacturado?.denominacion}: <b className="font-bold">{pedido.cantidad}</b></p>
                 ) : pedido.articuloInsumo ? (

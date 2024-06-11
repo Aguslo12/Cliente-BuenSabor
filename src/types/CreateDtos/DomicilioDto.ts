@@ -1,4 +1,5 @@
 export interface IDomicilioDto {
+    id: number,
     calle: string,
     numero: number,
     cp: number,

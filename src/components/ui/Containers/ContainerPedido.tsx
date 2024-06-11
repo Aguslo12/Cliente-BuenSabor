@@ -30,7 +30,7 @@ export const ContainerPedido = () => {
 
 
   return (
-    <div className="mx-10 flex flex-row space-x-2">
+    <div className="mx-10 flex flex-row space-x-2 flex-wrap">
         {pedidos.map((pedido: IPedido, id: number) => (
             <CardPedido
             id={pedido.id}

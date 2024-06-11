@@ -1,13 +1,14 @@
 import { IDetallePedido } from "./DetallePedido"
+import { IHoraEstimadaFinalizacion } from "./HoraEstimadaFinalizacion"
 
 export interface IPedido {
     id: number
-    horaFinalizacion: string
+    horaFinalizacion: IHoraEstimadaFinalizacion | null
     total: number
     totalCosto: number
     estado: string
     tipoEnvio: string
     formaPago: string
-    fechaPedido: string
+    fechaPedido: string | null
     detallesPedido: IDetallePedido[] 
 }

@@ -2,11 +2,12 @@ import { useEffect } from "react";
 import { CardArticuloCarrito } from "../../ui/Cards/CardArticuloCarrito";
 import { ContainerCarrito } from "../../ui/Containers/ContainerCarrito";
 import { Bounce, ToastContainer, toast } from "react-toastify";
-import {  useSucursalContext } from "../../../hooks/useContext";
+import {  useCarrito, useSucursalContext } from "../../../hooks/useContext";
 import "react-toastify/dist/ReactToastify.css";
 
 export const Carrito = () => {
   const { str, pedidoEnviado } = useSucursalContext();
+  const { cart } = useCarrito();
 
   useEffect(() => {
     if (str === 1) {
@@ -55,7 +56,11 @@ export const Carrito = () => {
         <div className="w-full flex flex-row">
           <CardArticuloCarrito />
         </div>
-        <ContainerCarrito />
+        {cart.length > 0 ? (
+          <ContainerCarrito />
+        ) : (
+          <div></div>
+        )}
         <>
           <ToastContainer />
         </>
