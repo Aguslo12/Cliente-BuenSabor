@@ -12,7 +12,7 @@ export const Login = () => {
   const navigate = useNavigate();
   const [passwordNo, setPasswordNo] = useState(false);
   const { getCliente } = useSucursalContext();
-  const [esperar, setEsperar] = useState<boolean>(true);
+  const [esperar, setEsperar] = useState<boolean>(false);
 
   const backend = new BackendMethods();
 
@@ -23,13 +23,6 @@ export const Login = () => {
     }, 3000);
   };
 
-  const hacerEsperarIngreso = () => {
-    setEsperar(false)
-    if (passwordNo) {
-      setEsperar(true)
-    }
-  }
-
   const schema = Yup.object().shape({
     userName: Yup.string().required("El nombre de usuario es obligatorio"),
     clave: Yup.string().required("La contraseña es obligatoria"),
@@ -37,16 +30,12 @@ export const Login = () => {
 
   const verificarUsuario = async (usuario: IUsuario) => {
     try {
+      setEsperar(true);
       const res: ICliente = await backend.post(
         `${import.meta.env.VITE_LOCAL}cliente/getCliente`,
         usuario
       );
-      sessionStorage.setItem(
-        "cliente",
-        JSON.stringify(
-          res
-        )
-      );
+      sessionStorage.setItem("cliente", JSON.stringify(res));
       navigate("/", {
         replace: true,
         state: {
@@ -54,10 +43,11 @@ export const Login = () => {
           usuario: usuario,
         },
       });
-      getCliente(res)
+      getCliente(res);
     } catch (error) {
       console.log("Contraseña incorrecta");
-        mostrarYEsconderAlertaPass();
+      setEsperar(false);
+      mostrarYEsconderAlertaPass();
     }
     /*
       mostrarYEsconderAlerta();
@@ -72,7 +62,7 @@ export const Login = () => {
             id: 0,
             userName: "",
             auth0Id: "",
-            clave:"",
+            clave: "",
             rol: "",
             activo: true,
           }}
@@ -119,41 +109,33 @@ export const Login = () => {
                     {errors.clave}
                   </div>
                 )}
-                {esperar ? (
-                  <button
+                <button
                   type="submit"
-                  className={`btn btn-outline text-xl font-light transition-all text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 w-full`}
-                  onClick={hacerEsperarIngreso}
+                  className={`btn btn-success text-xl font-light ${
+                    esperar && "btn-disabled animate-pulse"
+                  } transition-all w-full text-white`}
                 >
-                  Ingresar
+                  {esperar ? "Entrando..." : "Entrar"}
                 </button>
-                ) : (
-                  <button
-                  type="submit"
-                  className={`btn btn-outline text-xl font-light disabled bg-gray-500 text-white w-full`}
-                >
-                  Ingresando...
-                </button>
-                )}
                 {passwordNo && (
                   <div role="alert" className="alert alert-error">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="stroke-current shrink-0 h-6 w-6 fill-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span className="text-white">
-                    Usuario o contraseña incorrectos
-                  </span>
-                </div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="stroke-current shrink-0 h-6 w-6 fill-white"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span className="text-white">
+                      Usuario o contraseña incorrectos
+                    </span>
+                  </div>
                 )}
               </div>
               <Link to={"/registrarse"} className=" w-20">

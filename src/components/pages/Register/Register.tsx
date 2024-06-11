@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Field, Form, Formik, FormikHelpers } from "formik";
-import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { BackendMethods } from "../../../services/BackendClient";
 import { ILocalidad } from "../../../types/Domicilio/Localidad";
@@ -8,56 +8,27 @@ import { IProvincia } from "../../../types/Domicilio/Provincia";
 import { ICliente } from "../../../types/Cliente";
 import { TiChevronRightOutline, TiChevronLeftOutline } from "react-icons/ti";
 import ImageInput from "../../ui/Forms/Inputs/ImageInput";
+import { IFormRegister } from "../../../types/Forms/FormRegister";
 
 export const Register = () => {
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const [actualizacion, setActualizacion] = useState(false);
   const [nombreUsado, setNombreUsado] = useState(false);
+  const [esperar, setEsperar] = useState<boolean>(false);
+  const [exito, setExito] = useState<boolean>(false);
 
   const [provincias, setProvincias] = useState<IProvincia[]>([]);
   const [localidades, setLocalidades] = useState<ILocalidad[]>([]);
-  const [selectedProvincia, setSelectedProvincia] = useState<IProvincia | null>(null);
+  const [selectedProvincia, setSelectedProvincia] = useState<IProvincia | null>(
+    null
+  );
   const [seccionDomicilio, setSeccionDomicilio] = useState<boolean>(false);
 
   type FileWithPreview = File & { preview: string };
 
-  const [files, setFile] = useState<FileWithPreview | null>()
-
-  type FormState = {
-    [key: string]: any;
-    id: number;
-    eliminado: boolean;
-    nombre: string;
-    apellido: string;
-    telefono: string;
-    email: string;
-    usuario: {
-      id: number;
-      eliminado: boolean;
-      auth0Id: string;
-      userName: string;
-      clave: string;
-    };
-    domicilios: [
-      {
-        calle: string;
-        numero: number;
-        cp: number;
-        piso: number;
-        nroDpto: number;
-        idLocalidad: number;
-      }
-    ] | unknown[];
-  };
+  const [files, setFile] = useState<FileWithPreview | null>();
 
   const backend = new BackendMethods();
-
-  const mostrarYEsconderAlerta = () => {
-    setMostrarAlerta(true);
-    setTimeout(() => {
-      setMostrarAlerta(false);
-    }, 3000);
-  };
 
   const mostrarUsadoONo = () => {
     setNombreUsado(true);
@@ -67,9 +38,10 @@ export const Register = () => {
   };
 
   const enviarUsuario = async (
-    cliente: FormState,
-    { setSubmitting }: FormikHelpers<FormState>
+    cliente: IFormRegister,
+    { setSubmitting }: FormikHelpers<IFormRegister>
   ) => {
+    setEsperar(true);
     try {
       const domiciliosGuardados = await Promise.all(
         cliente.domicilios.map(async (domicilio) => {
@@ -85,15 +57,16 @@ export const Register = () => {
 
       const res: ICliente = await backend.postConImagen(
         `${import.meta.env.VITE_LOCAL}cliente/save`,
-        cliente as FormState,
+        cliente as IFormRegister,
         files as File
       );
-      console.log(files)
+      console.log(res);
     } catch (error) {
       console.error(error);
       mostrarUsadoONo();
+      setEsperar(false);
     }
-    mostrarYEsconderAlerta();
+    setExito(true);
     setActualizacion(!actualizacion);
     setSubmitting(false);
   };
@@ -113,7 +86,9 @@ export const Register = () => {
       Yup.object().shape({
         calle: Yup.string().required("La calle es obligatoria"),
         cp: Yup.string().required("El código postal es obligatorio"),
-        nroDpto: Yup.string().required("El número de departamento es obligatorio"),
+        nroDpto: Yup.string().required(
+          "El número de departamento es obligatorio"
+        ),
         numero: Yup.string().required("El número del domicilio es obligatorio"),
         piso: Yup.string().required("El piso del domicilio es obligatorio"),
         idLocalidad: Yup.number().required("La localidad es obligatoria"),
@@ -143,7 +118,9 @@ export const Register = () => {
       const fetchLocalidades = async () => {
         try {
           const res: ILocalidad[] = await backend.getAll(
-            `${import.meta.env.VITE_LOCAL}localidad/findByProvincia/${selectedProvincia.id}`
+            `${import.meta.env.VITE_LOCAL}localidad/findByProvincia/${
+              selectedProvincia.id
+            }`
           );
           const uniqueLocalidades = Array.from(
             new Set(res.map((localidad) => localidad.id))
@@ -159,7 +136,7 @@ export const Register = () => {
 
   return (
     <div className="bg-[#bc4749] h-screen flex items-center justify-center relative z-50">
-      <div className="bg-white border-red-500 border-[1px] card w-auto shadow-lg">
+      <div className={`bg-white ${exito && "hidden"} border-red-500 border-[1px] card w-auto shadow-lg `}>
         <Formik
           initialValues={{
             id: 0,
@@ -196,7 +173,11 @@ export const Register = () => {
               <h1 className="card-title flex justify-center text-3xl font-extralight text-red-500/90 mb-5">
                 Registrarse
               </h1>
-              <div className={`space-y-5 text-red-500/90 ${seccionDomicilio && "hidden"}`}>
+              <div
+                className={`space-y-5 text-red-500/90 ${
+                  seccionDomicilio && "hidden"
+                }`}
+              >
                 <div className="flex flex-row space-x-5">
                   <div>
                     <label className="italic input input-bordered border-slate-700 hover:border-red-500/90 flex items-center font-normal gap-3">
@@ -306,9 +287,22 @@ export const Register = () => {
                     )}
                   </div>
                 </div>
-                <ImageInput id={1} key={1} file={files as FileWithPreview} setFile={setFile as Dispatch<SetStateAction<FileWithPreview | null | undefined>>} />
+                <ImageInput
+                  id={1}
+                  key={1}
+                  file={files as FileWithPreview}
+                  setFile={
+                    setFile as Dispatch<
+                      SetStateAction<FileWithPreview | null | undefined>
+                    >
+                  }
+                />
               </div>
-              <div className={`space-y-5 text-red-500/90 ${seccionDomicilio || "hidden"}`}>
+              <div
+                className={`space-y-5 text-red-500/90 ${
+                  seccionDomicilio || "hidden"
+                }`}
+              >
                 <div className="flex flex-row space-x-5">
                   <div>
                     <label className="form-control w-full max-w-xs">
@@ -322,7 +316,10 @@ export const Register = () => {
                         className={` select text-base select-bordered w-[280.34px] max-w-xs border-slate-700 hover:border-red-500/90 flex items-center font-normal`}
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                           const selectedValue = e.target.value;
-                          const selectedProvincia = provincias.find((provincia) => provincia.nombre === selectedValue) || null;
+                          const selectedProvincia =
+                            provincias.find(
+                              (provincia) => provincia.nombre === selectedValue
+                            ) || null;
                           setSelectedProvincia(selectedProvincia);
                           setFieldValue("provincia", selectedValue);
                           setFieldValue("localidad", ""); // Resetear la localidad seleccionada
@@ -355,9 +352,15 @@ export const Register = () => {
                         className={` select text-base select-bordered w-[280.34px] max-w-xs border-slate-700 hover:border-red-500/90 flex items-center font-normal`}
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                           const selectedValue = e.target.value;
-                          const selectedLocalidad = localidades.find((localidad) => localidad.nombre === selectedValue) || null;
+                          const selectedLocalidad =
+                            localidades.find(
+                              (localidad) => localidad.nombre === selectedValue
+                            ) || null;
                           setFieldValue("localidad", selectedValue);
-                          setFieldValue("domicilios[0].idLocalidad", selectedLocalidad?.id || 0);
+                          setFieldValue(
+                            "domicilios[0].idLocalidad",
+                            selectedLocalidad?.id || 0
+                          );
                         }}
                       >
                         <option value="" label="Selecciona una localidad" />
@@ -399,7 +402,9 @@ export const Register = () => {
                   <div className="w-[280.34px]">
                     <label className="form-control w-full max-w-xs">
                       <div className="label italic gap-3">
-                        <span className="label-text text-base">Código Postal</span>
+                        <span className="label-text text-base">
+                          Código Postal
+                        </span>
                       </div>
                       <Field
                         id="cp"
@@ -421,7 +426,9 @@ export const Register = () => {
                   <div className="w-[280.34px]">
                     <label className="form-control w-full max-w-xs">
                       <div className="label italic gap-3">
-                        <span className="label-text text-base">Número Dpto.</span>
+                        <span className="label-text text-base">
+                          Número Dpto.
+                        </span>
                       </div>
                       <Field
                         id="nroDpto"
@@ -441,7 +448,9 @@ export const Register = () => {
                   <div className="w-[280.34px]">
                     <label className="form-control w-full max-w-xs">
                       <div className="label italic gap-3">
-                        <span className="label-text text-base">Número Domicilio.</span>
+                        <span className="label-text text-base">
+                          Número Domicilio.
+                        </span>
                       </div>
                       <Field
                         id="numero"
@@ -483,9 +492,11 @@ export const Register = () => {
                 </div>
                 <button
                   type="submit"
-                  className="btn btn-outline w-full text-xl font-light text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90"
+                  className={`btn btn-success ${
+                    esperar && "btn-disabled animate-pulse"
+                  } w-full text-xl  font-light text-white`}
                 >
-                  Registrarse
+                  {esperar ? "Espere..." : "Registrarse"}
                 </button>
                 {mostrarAlerta && (
                   <div
@@ -533,13 +544,17 @@ export const Register = () => {
               </div>
               <div className="flex justify-between w-full">
                 <Link to={"/iniciarSesion"} className="flex w-[100px]">
-                  <button className="flex text-left font-normal ml-1 mt-2 hover:underline text-red-500/90">
+                  <button
+                    className={`flex text-left font-normal ml-1 mt-2 hover:underline text-red-500/90`}
+                  >
                     Iniciar Sesión
                   </button>
                 </Link>
                 {seccionDomicilio ? (
                   <button
-                    className="flex justify-end btn btn-outline font-light text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 text-base"
+                    className={` btn btn-outline ${
+                      exito && "hidden"
+                    } font-light text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 text-base`}
                     onClick={() => setSeccionDomicilio(!seccionDomicilio)}
                   >
                     <TiChevronLeftOutline className="text-xl" />
@@ -547,7 +562,9 @@ export const Register = () => {
                   </button>
                 ) : (
                   <button
-                    className="flex justify-end btn btn-outline font-light text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 text-base"
+                    className={` btn btn-outline font-light ${
+                      exito && "hidden"
+                    } text-white bg-red-500 hover:bg-white hover:border-red-500/90 hover:text-red-500/90 text-base`}
                     onClick={() => setSeccionDomicilio(!seccionDomicilio)}
                   >
                     Domicilio
@@ -558,7 +575,22 @@ export const Register = () => {
             </Form>
           )}
         </Formik>
+        
       </div>
+      {exito && (
+        <div className="bg-white p-10 rounded-lg space-y-10">
+          <div className="text-4xl flex justify-center items-center text-red-600 font-semibold">
+        ¡Usuario registrado con exito!
+      </div>
+      <Link to={"/iniciarSesion"} className="flex justify-center w-full">
+          <button
+            className={`flex font-semibold ml-1 mt-2 hover:underline text-red-500/90`}
+          >
+            Iniciar Sesión
+          </button>
+        </Link>
+        </div>
+      )}
     </div>
   );
 };

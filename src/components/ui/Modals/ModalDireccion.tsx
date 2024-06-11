@@ -9,7 +9,6 @@ interface ModalDireccionProps {
 export const ModalDireccion: React.FC<ModalDireccionProps> = ({ closeModal }) => {
 
     const guardarDomicilio = () => {
-
     }
 
     const schema = Yup.object().shape({
@@ -46,7 +45,6 @@ export const ModalDireccion: React.FC<ModalDireccionProps> = ({ closeModal }) =>
               validateOnChange={false}
             validateOnBlur={false}
               >
-
               </Formik>
             </div>
   )
