@@ -6,9 +6,8 @@ import { useAppSelector } from "../../../hooks/redux";
 import { IArticuloInsumo } from "../../../types/ArticuloInsumo";
 import CardArticuloInsumo from "../Cards/CardArticuloInsumo";
 
-const ContainerArticulos = () => {
+const ContainerArticulos= () => {
   const backend = new BackendMethods();
-
 
   const [articulosManufacturados, setArticulosManufacturados] = useState<
     IArticuloManufacturado[]
@@ -36,11 +35,13 @@ const ContainerArticulos = () => {
       setArticulosInsumos(
         ariticulosInsFiltrados.filter((articulo) => !articulo.esParaElaborar)
       );
+
       //@ts-expect-error DA ERROR PORQUE EL ARTICULO QUE TRAE EL GET NO TIENE IDCATEGORÍA, TIENE CATEGORÍA
       const articulosFiltrados: IArticuloManufacturado[] = res.filter(
         (articulo) => articulo.categoria.id === idCategoria
       );
       setArticulosManufacturados(articulosFiltrados);
+      console.log(articulosManufacturados)
     };
     traerArticulos();
   }, [idCategoria]);

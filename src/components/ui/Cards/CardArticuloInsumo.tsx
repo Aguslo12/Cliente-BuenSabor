@@ -12,6 +12,7 @@ const CardArticuloInsumo: FC<IArticuloInsumo> = ({
   imagenes,
   precioVenta,
   esParaElaborar,
+  stockActual,
 }) => {
   const { cart, addCarrito, removeItemCarrito } = useCarrito();
   const [cantidad, setCantidad] = useState<number>(0);
@@ -66,14 +67,15 @@ const CardArticuloInsumo: FC<IArticuloInsumo> = ({
   };
 
   return (
-    <div className="">
+    <div>
       {esParaElaborar ? (
         <div></div>
       ) : (
-        <div className="card w-96 bg-base-100 h-[390px] rounded-md border shadow m-5">
+        <div className="card w-80 bg-base-100 h-[330px] rounded-md border shadow hover:scale-105 cursor-pointer transition-all m-5"
+        >
           {imagenes !== undefined && imagenes.length >= 1 && (
             <figure>
-              <img src={imagenes[0].url} alt="promo" className="w-full" />
+              <img src={imagenes[0].url} alt="promo" className="w-full" onClick={() => document.getElementById(`my_modal_${id}`).showModal()}/>
             </figure>
           )}
           <div className="">
@@ -115,6 +117,37 @@ const CardArticuloInsumo: FC<IArticuloInsumo> = ({
           </div>
         </div>
       )}
+      <div>
+        <dialog id={`my_modal_${id}`} className="modal">
+          <div className="modal-box max-w-[600px] h-full max-h-[600px]">
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                ✕
+              </button>
+            </form>
+            <h3 className="font-bold text-lg card-title pb-5">
+              {denominacion}
+            </h3>
+            <div className="flex flex-col">
+              <img
+                src={imagenes[0].url}
+                alt={imagenes[0].name}
+                className="rounded-md max-h-[325px] h-full"
+              />
+              <div className="flex flex-col font-bold w-full mt-3 space-y-3">
+                <p className="flex justify-between w-full">
+                  {" "}
+                  Precio: <p className="text-red-600">$ {precioVenta}</p>
+                </p>
+                <p className="flex justify-between w-full">
+                  Disponibles:{" "}
+                  <p className="text-red-600"> {stockActual}</p>
+                </p>
+              </div>
+            </div>
+          </div>
+        </dialog>
+      </div>
     </div>
   );
 };

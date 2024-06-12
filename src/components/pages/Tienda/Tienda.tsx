@@ -4,11 +4,12 @@ import ContainerArticulos from '../../ui/Containers/ContainerArticulos'
 import { ContainerPromocion } from '../../ui/Containers/ContainerPromocion'
 
 const Tienda = () => {
+
     return (
         <>
             <ContainerCategoria />
             <ContainerArticulos />
-            <ContainerPromocion/>
+            <ContainerPromocion />
         </>
     )
 }

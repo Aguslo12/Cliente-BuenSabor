@@ -6,6 +6,7 @@ import { useCarrito } from "../../../hooks/useContext";
 import { BackendMethods } from "../../../services/BackendClient";
 import { IDetallePedidoDos } from "../../../types/DetallePedidoDos";
 import { IDetallePedido } from "../../../types/DetallePedido";
+import { ModalDetalleArt } from "../Modals/ModalDetalleArt";
 
 const CardArticulo: FC<IArticuloManufacturado> = ({
   id,
@@ -13,6 +14,10 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
   imagenes,
   precioVenta,
   tiempoEstimadoMinutos,
+  descripcion,
+  preparacion,
+  unidadMedida,
+  articuloManufacturadoDetalles,
 }) => {
   const { cart, addCarrito, removeItemCarrito } = useCarrito();
   const [cantidad, setCantidad] = useState<number>(0);
@@ -30,9 +35,7 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
   }, []);
 
   useEffect(() => {
-    const itemInCart = cart.find(
-      (item) => item.articulo?.id === id
-    );
+    const itemInCart = cart.find((item) => item.articulo?.id === id);
     if (itemInCart) {
       setCantidad(itemInCart.cantidad);
     }
@@ -71,10 +74,12 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
   };
 
   return (
-    <div className="card w-96 bg-base-100 h-[390px] rounded-md border shadow m-5">
+    <div
+      className="card w-80 bg-base-100 h-[330px] rounded-md border shadow hover:scale-105 cursor-pointer transition-all m-5"
+    >
       {imagenes !== undefined && imagenes.length >= 1 && (
         <figure>
-          <img src={imagenes[0].url} alt="promo" className="w-full" />
+          <img src={imagenes[0].url} alt="promo" className="w-full" onClick={() => document.getElementById(`my_modal_${id}`).showModal()}/>
         </figure>
       )}
       <div className="">
@@ -95,7 +100,7 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
             </button>
 
             <button
-              className="btn bg-white hover:bg-white text-red-600 border-none rounded-l-xl rounded-r-none  text-sm disabled:bg-white disabled:text-slate-300"
+              className="btn bg-white hover:bg-white text-red-600 border-none rounded-r-xl rounded-l-none  text-sm disabled:bg-white disabled:text-slate-300"
               onClick={agregar}
             >
               <FaPlus />
@@ -116,6 +121,41 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <dialog id={`my_modal_${id}`} className="modal">
+          <div className="modal-box max-w-[600px] h-full max-h-[600px]">
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                ✕
+              </button>
+            </form>
+            <h3 className="font-bold text-lg card-title pb-5">
+              {denominacion}
+            </h3>
+            <div className="flex flex-col">
+              <img
+                src={imagenes[0].url}
+                alt={imagenes[0].name}
+                className="rounded-md max-h-[325px] h-full"
+              />
+              <div className="flex flex-col font-bold w-full mt-3 space-y-3">
+                <p className="flex justify-between w-full">
+                  {" "}
+                  Precio: <p className="text-red-600">$ {precioVenta}</p>
+                </p>
+                <p className="flex justify-between w-full">
+                  Tiempo de espera aproximado:{" "}
+                  <p className="text-red-600"> {tiempoEstimadoMinutos} min.</p>
+                </p>
+                <div className="flex w-full justify-center flex-col pt-3">
+                  <p className="text-center">Preparación</p>
+                  <p className="text-center text-red-600">{preparacion}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </dialog>
       </div>
     </div>
   );
