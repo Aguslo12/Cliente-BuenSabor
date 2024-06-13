@@ -1,15 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ICliente } from "../../../types/Cliente";
 import { Formik } from "formik";
 
-const storedCliente = sessionStorage.getItem("cliente");
+const Perfil = () => {
+  const storedCliente = sessionStorage.getItem("cliente");
 let client: ICliente | null = null;
 
 if (storedCliente) {
   client = JSON.parse(storedCliente) as ICliente;
 }
-
-const Perfil = () => {
   return (
     <div className="flex text-black  ml-10 pt-10 flex-col space-y-5">
       <p className="text-xl">Editar</p>

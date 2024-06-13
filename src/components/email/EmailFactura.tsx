@@ -1,9 +1,11 @@
 import emailjs from "emailjs-com";
 import { IPedido } from "../../types/Pedidos";
+import { ICliente } from "../../types/Cliente";
 
   const createFormattedMessage = (formState: IPedido): string => {
     console.log("ACA ARARHASDKJHASDKASHDJSASHKHASDKJASDJAKSDSKJH")
     console.log(formState)
+
     const detallesPedidoFormatted = formState.detallesPedido.map((detalle) => {
       return `- Producto: ${detalle.idArticulo}, Cantidad: ${detalle.cantidad}`;
     }).join('\n');
@@ -39,15 +41,23 @@ import { IPedido } from "../../types/Pedidos";
   };
   
   const sendEmail = async (formState: IPedido) => {
+    const storedCliente = sessionStorage.getItem("cliente");
+  let user: ICliente | undefined = undefined;
+
+  if (storedCliente) {
+    user = JSON.parse(storedCliente) as ICliente;
+  }
+
     console.log("Sending email...");
   
     const formattedMessage = createFormattedMessage(formState);
   
     const templateParams = {
-      to_name: "Bruno",
-      from_name: "Agustin",
+      to_name: user?.nombre,
+      from_name: "El Buen Sabor",
       message: formattedMessage,
-      reply_to: "email@example.com",
+      reply_to: "buensabor@gmail.com",
+      to_email: user?.email,
     };
   
     try {

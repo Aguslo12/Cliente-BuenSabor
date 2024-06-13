@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ICliente } from "../../../types/Cliente";
 import { AiOutlineEdit } from "react-icons/ai";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { ModalDireccion } from "../Modals/ModalDireccion";
+import { BackendMethods } from "../../../services/BackendClient";
 
 const Direccion = () => {
   const storedCliente = sessionStorage.getItem("cliente");
@@ -12,10 +13,16 @@ const Direccion = () => {
     client = JSON.parse(storedCliente) as ICliente;
   }
 
+  const backend = new BackendMethods();
   const [ open, setOpen ] = useState<boolean>(false)
 
   const openModal = () => setOpen(true);
   const closeModal = () => setOpen(false);
+
+  const eliminarDomicilio = async (id: number) => {
+    const res = await backend.delete(`${import.meta.env.VITE_LOCAL}domicilio/${id}`)
+    console.log(res)
+  }
 
   return (
     <div className="flex text-black w-[1600px] text-3xl ml-10 pt-10 flex-col">
@@ -58,7 +65,7 @@ const Direccion = () => {
                     </button>
                   </td>
                   <td>
-                    <button className="btn btn-sm btn-error">
+                    <button className="btn btn-sm btn-error" onClick={()=>eliminarDomicilio(domicilio.id)}>
                       <FaRegTrashAlt className="text-white" />
                     </button>
                   </td>

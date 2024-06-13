@@ -9,7 +9,7 @@ interface iContainerPerfil {
 
 export const ContainerPerfil: FC<iContainerPerfil> = ({ estado }) => {
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full w-full flex-col">
       <div className="flex mt-20">
         <h1 className="flex font-bold text-5xl mt-10 ml-10 ">Configuración</h1>
       </div>

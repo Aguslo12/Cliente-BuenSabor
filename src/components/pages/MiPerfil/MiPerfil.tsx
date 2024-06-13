@@ -17,7 +17,7 @@ const MiPerfil = () => {
 
   return (
     <div className='flex h-screen'>
-      <div className='flex z-40 flex-col space-y-3 items-center justify-start pt-5 bg-red-600 h-full w-[270px] mt-[75px] text-white'>
+      <div className='flex z-50 flex-col space-y-3 items-center justify-start pt-5 bg-red-600 h-full w-[270px] mt-[75px] text-white'>
         <div className='flex justify-start w-full pl-2'> 
         <p className='justify-center w-full flex font-semibold'>Qué configurar</p>
         </div>

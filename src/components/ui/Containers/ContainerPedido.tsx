@@ -6,7 +6,7 @@ import { ICliente } from "../../../types/Cliente";
 
 export const ContainerPedido = () => {
   const backend = new BackendMethods();
-  const [estado, setEstado] = useState<string>("")
+  const [estado, setEstado] = useState<string>("PENDIENTE")
 
   const storedCliente = sessionStorage.getItem("cliente");
 
@@ -36,7 +36,7 @@ export const ContainerPedido = () => {
     // Aquí podrías realizar cualquier acción adicional que necesites al cambiar el estado
   };
 
-  console.log(pedidos.length);
+  console.log(cliente?.pedidos.length);
 
   return cliente?.pedidos.length != undefined && cliente?.pedidos.length <= 0 ? (
     <div className="flex w-screen h-screen items-center justify-center">

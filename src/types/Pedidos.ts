@@ -1,7 +1,6 @@
 import { IClienteDto } from "./CreateDtos/ClienteShortDto"
 import { IDomicilioDto } from "./CreateDtos/DomicilioDto"
 import { ISucursalDto } from "./CreateDtos/SucursalDto"
-import { IDetallePedido } from "./DetallePedido"
 import { IDetallePedidoIdArt } from "./DetallePedidoIdArt"
 import { IEmpleado } from "./Empleado"
 import { IFactura } from "./Factura"
