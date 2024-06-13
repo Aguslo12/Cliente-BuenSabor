@@ -75,7 +75,10 @@ const CardArticuloInsumo: FC<IArticuloInsumo> = ({
         >
           {imagenes !== undefined && imagenes.length >= 1 && (
             <figure>
-              <img src={imagenes[0].url} alt="promo" className="w-full" onClick={() => document.getElementById(`my_modal_${id}`).showModal()}/>
+              <img src={imagenes[0].url} alt="promo" className="w-full"/>
+              <div className="absolute top-0 right-0 bg-red-600 bg-opacity-70 text-white p-2 rounded-md cursor-pointer hover:bg-opacity-90 transition-all" onClick={() => document.getElementById(`my_modal_${id}`).showModal()}>
+            Ver detalle
+          </div>
             </figure>
           )}
           <div className="">

@@ -50,7 +50,7 @@ const ContainerArticulos= () => {
     <div className="pt-24">
       <div className="flex flex-wrap justify-center items-center p-5 m-10">
         {articulosInsumos.length <= 0 && articulosManufacturados.length <= 0 ? (
-          <div className="h-[430px] items-center flex pb-20 justify-center">
+          <div className="h-[430px] w-[1500px]  items-center flex pb-20 justify-center">
             <div className="text-4xl bg-red-600 text-white rounded p-5">
               No hay productos disponibles
             </div>

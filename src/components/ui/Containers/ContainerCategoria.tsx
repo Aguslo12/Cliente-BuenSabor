@@ -1,60 +1,68 @@
 import React, { useEffect, useState } from "react";
 import { BackendMethods } from "../../../services/BackendClient";
 import { useParams } from "react-router-dom";
-import CardCategoria from "../Cards/CardCategoria";
 import { ICategoriaShort } from "../../../types/ShortDtos/CategoriaShort";
-import { useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { setCategory } from "../../../redux/slices/globalCategory";
 
 const ContainerCategoria = () => {
   const backend = new BackendMethods();
-  const [loading, setLoading] = useState<boolean>(false) 
-
-  const { idSucursal } = useParams();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const sucursalSeleccionada = useAppSelector(
     (state) => state.GlobalSucursal.selected
   );
 
+  const dispatch = useAppDispatch();
+
+  const seleccionarCategoria = (id: number) => {
+    dispatch(setCategory(id));
+    console.log(id);
+  };
+
   const [categorias, setCategorias] = useState<ICategoriaShort[]>([]);
 
   useEffect(() => {
-      const traerCategorias = async () => {
-        const res: ICategoriaShort[] = (await backend.getAll(
-          `${
-            import.meta.env.VITE_LOCAL
-          }sucursal/getCategorias/${sucursalSeleccionada}`
-        )) as ICategoriaShort[];
-        setCategorias(res);
-      };
-      traerCategorias();
-    setLoading(true)
+    const traerCategorias = async () => {
+      const res: ICategoriaShort[] = (await backend.getAll(
+        `${import.meta.env.VITE_LOCAL}sucursal/getCategorias/${sucursalSeleccionada}`
+      )) as ICategoriaShort[];
+      setCategorias(res);
+    };
+    traerCategorias();
+    setLoading(true);
   }, [sucursalSeleccionada]);
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedId = Number(event.target.value);
+    seleccionarCategoria(selectedId);
+  };
 
   return (
     <div className="pt-24 bg-white">
       {loading ? (
         categorias.length <= 0 ? (
-          <div className="flex items-center">
-              No hay categorías
-          </div>
+          <div className="flex items-center">No hay categorías</div>
         ) : (
-          <div className="flex flex-wrap justify-center items-center mx-1 fixed z-40 bg-white w-full">
-            {categorias.map((categoria: ICategoriaShort, id: number) => (
-              <CardCategoria
-                denominacion={categoria.denominacion}
-                id={categoria.id}
-                eliminado={categoria.eliminado}
-                esInsumo={categoria.esInsumo}
-                esPadre={categoria.esPadre}
-                idSucursal={categoria.idSucursal}
-                key={id}
-              />
-            ))}
+          <div className="flex justify-center items-center mx-1 space-y-2 fixed z-40 flex-col w-[1625px]">
+            <p className="flex text-xl">Categoría</p>
+            <select
+              className="flex select text-white justify-center select-bordered bg-red-600 w-32 text-center max-w-xs"
+              onChange={handleSelectChange}
+            >
+              <option disabled selected>
+                Elegir Cat.
+              </option>
+              {categorias.map((categoria) => (
+                <option key={categoria.id} value={categoria.id}>
+                  {categoria.denominacion}
+                </option>
+              ))}
+            </select>
           </div>
         )
       ) : (
-       <div></div>
-        
+        <div></div>
       )}
     </div>
   );

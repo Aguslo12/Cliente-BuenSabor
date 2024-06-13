@@ -15,7 +15,7 @@ export const ContainerPedido = () => {
   if (storedCliente) {
     cliente = JSON.parse(storedCliente) as ICliente;
   }
-
+  const [loading, setLoading] = useState<boolean>(false)
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
 
   const traerPedidos = async () => {
@@ -25,9 +25,11 @@ export const ContainerPedido = () => {
     )) as IPedido[];
     setPedidos(res);
     console.log(res)
+    setLoading(false)
   };
 
   useEffect(() => {
+    setLoading(true)
     traerPedidos();
   }, [estado]);
 
@@ -80,20 +82,32 @@ export const ContainerPedido = () => {
           </select>
         </div>
       </div>
-      {pedidos.map((pedido: IPedido, id: number) => (
-        <CardPedido
-          id={pedido.id}
-          estado={pedido.estado}
-          fechaPedido={pedido.fechaPedido}
-          formaPago={pedido.formaPago}
-          horaEstimadaFinalizacion={pedido.horaEstimadaFinalizacion}
-          detallesPedido={pedido.detallesPedido}
-          tipoEnvio={pedido.tipoEnvio}
-          total={pedido.total}
-          totalCosto={pedido.totalCosto}
-          key={id}
-        />
-      ))}
+      {loading ? (
+        <div className="flex items-center justify-center h-[500px] text-2xl">
+          Cargando <span className="ml-5 loading loading-spinner loading-sm"></span>
+        </div>
+      ) : (
+        pedidos.length <= 0 ? (
+          <div className="flex items-center justify-center h-[500px] text-2xl">
+            No hay productos en estado {estado.toLowerCase()}
+          </div>
+        ) : (
+          pedidos.map((pedido: IPedido, id: number) => (
+            <CardPedido
+              id={pedido.id}
+              estado={pedido.estado}
+              fechaPedido={pedido.fechaPedido}
+              formaPago={pedido.formaPago}
+              horaEstimadaFinalizacion={pedido.horaEstimadaFinalizacion}
+              detallesPedido={pedido.detallesPedido}
+              tipoEnvio={pedido.tipoEnvio}
+              total={pedido.total}
+              totalCosto={pedido.totalCosto}
+              key={id}
+            />
+          ))
+        )
+      )}
     </div>
   );
 };

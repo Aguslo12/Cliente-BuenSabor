@@ -14,21 +14,28 @@ const Direccion = () => {
   }
 
   const backend = new BackendMethods();
-  const [ open, setOpen ] = useState<boolean>(false)
+  const [open, setOpen] = useState<boolean>(false);
 
   const openModal = () => setOpen(true);
   const closeModal = () => setOpen(false);
 
   const eliminarDomicilio = async (id: number) => {
-    const res = await backend.delete(`${import.meta.env.VITE_LOCAL}domicilio/${id}`)
-    console.log(res)
-  }
+    const res = await backend.delete(
+      `${import.meta.env.VITE_LOCAL}domicilio/${id}`
+    );
+    console.log(res);
+  };
+
+  const domFiltrados = client?.domicilios.filter((domicilio) => domicilio.eliminado === false)
 
   return (
     <div className="flex text-black w-[1600px] text-3xl ml-10 pt-10 flex-col">
       <div className="flex justify-between">
         <p>Mis direcciones</p>
-        <button className="btn btn-ghost btn-accent bg-green-600 text-white hover:text-green-600 hover:border-green-600 mr-10" onClick={openModal}>
+        <button
+          className="btn btn-ghost btn-accent bg-green-600 text-white hover:text-green-600 hover:border-green-600 mr-10"
+          onClick={openModal}
+        >
           Añadir dirección +
         </button>
       </div>
@@ -50,33 +57,43 @@ const Direccion = () => {
           {client === null ? (
             <div></div>
           ) : (
-            client.domicilios.map((domicilio) => (
-              <tbody key={domicilio.id}>
-                <tr className="border-black justify-center" key={domicilio.id}>
-                  <th>{domicilio.id}</th>
-                  <td>{domicilio.calle}</td>
-                  <td>{domicilio.numero}</td>
-                  <td>{domicilio.cp}</td>
-                  <td>{domicilio.piso}</td>
-                  <td>{domicilio.nroDpto}</td>
-                  <td>
-                    <button className="btn btn-sm btn-primary">
-                      <AiOutlineEdit className="text-white" />
-                    </button>
-                  </td>
-                  <td>
-                    <button className="btn btn-sm btn-error" onClick={()=>eliminarDomicilio(domicilio.id)}>
-                      <FaRegTrashAlt className="text-white" />
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            ))
+            client.domicilios.map((domicilio) =>
+              domicilio.eliminado === false ? (
+                <tbody key={domicilio.id}>
+                  <tr
+                    className="border-black justify-center"
+                    key={domicilio.id}
+                  >
+                    <th>{domicilio.id}</th>
+                    <td>{domicilio.calle}</td>
+                    <td>{domicilio.numero}</td>
+                    <td>{domicilio.cp}</td>
+                    <td>{domicilio.piso}</td>
+                    <td>{domicilio.nroDpto}</td>
+                    <td>
+                      <button className="btn btn-sm btn-primary">
+                        <AiOutlineEdit className="text-white" />
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-sm btn-error"
+                        onClick={() => eliminarDomicilio(domicilio.id)}
+                      >
+                        <FaRegTrashAlt className="text-white" />
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              ) : (
+                <div></div>
+              )
+            )
           )}
           {open && (
             <div className="fixed z-50 inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-            <ModalDireccion closeModal={closeModal}/>
-          </div>
+              <ModalDireccion closeModal={closeModal} />
+            </div>
           )}
         </table>
       </div>
