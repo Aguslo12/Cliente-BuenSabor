@@ -10,6 +10,8 @@ import { IDomicilioCompleto } from "../../../types/DomicilioCompleto";
 import CheckoutMP from "../CheckoutMP/CheckoutMP";
 import EmailFactura from "../../email/EmailFactura";
 import { IFormPedido } from "../../../types/Forms/FormPedido";
+import { toast } from "react-toastify";
+
 
 export const ContainerCarrito = () => {
   const { cart, limpiarCarrito } = useCarrito();
@@ -17,6 +19,7 @@ export const ContainerCarrito = () => {
   const { suc } = useSucursalContext();
   const [direccion, SetDireccion] = useState();
   const [domicilio, setDomicilio] = useState<number>();
+  const [formaEntrega, setFormaEntrega] = useState<string>("DELIVERY"); // Estado para la forma de entrega
 
   const storedCliente = sessionStorage.getItem("cliente");
   let client: ICliente | null = null;
@@ -121,9 +124,14 @@ export const ContainerCarrito = () => {
       ),
       total: calcularTotalProductos(),
       idCliente: client?.id,
+      tipoEnvio: formaEntrega,
       idDomicilio: domicilio,
     }));
-  }, [cart, direccion, domicilio]);
+  }, [cart, direccion, domicilio,formaEntrega]);
+
+  const handleFormaEntregaChange = (tipo) => {
+    setFormaEntrega(tipo);
+  };
 
   const postPedido = async () => {
     try {
@@ -134,13 +142,16 @@ export const ContainerCarrito = () => {
       console.log("SANCHO PANZA");
       console.log(res);
       if (res.estado === "RECHAZADO") {
+        toast.error("Error por falta de stock")
         console.log("falta de stock");
       } else {
-        EmailFactura(res)
+        toast.success("Pedido pagado correctamente!")
+        EmailFactura(res.factura);
         console.log("enviado");
         eliminarTodo();
       }
     } catch (error) {
+      toast.error("Hubo un problema")
       console.error("Error posting pedido:", error);
       console.log("hubo un problema");
     }
@@ -166,7 +177,7 @@ export const ContainerCarrito = () => {
             </span>
           </div>
           <div className="text-base flex justify-center text-center font-bold">
-            <p>Dirección de envío:</p>
+            <p>Dirección de envío</p>
           </div>
           <select
             className="flex select select-bordered mb-4 bg-red-600 text-white font-semibold text-center justify-center"
@@ -181,6 +192,29 @@ export const ContainerCarrito = () => {
               </option>
             ))}
           </select>
+          <div>
+            <p className="flex justify-center text-base font-bold">Forma de entrega</p>
+            <div className="flex flex-row justify-center py-2">
+              <div className="flex flex-row items-center">
+                <p className="mr-2">Delivery</p>
+                <input
+                  type="checkbox"
+                  checked={formaEntrega === "DELIVERY"}
+                  onChange={() => handleFormaEntregaChange("DELIVERY")}
+                  className="checkbox checkbox-error"
+                />
+              </div>
+              <div className="flex flex-row items-center ml-4">
+                <p className="mr-2">Sucursal</p>
+                <input
+                  type="checkbox"
+                  checked={formaEntrega === "TAKE_AWAY"}
+                  onChange={() => handleFormaEntregaChange("TAKE_AWAY")}
+                  className="checkbox checkbox-error"
+                />
+              </div>
+            </div>
+          </div>
           <hr />
           <div className="card-actions mt-5 w-full">
             {client ? (

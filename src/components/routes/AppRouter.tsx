@@ -1,3 +1,4 @@
+import { ToastContainer } from "react-toastify";
 import { CarritoContextProvider } from "../../context/CarritoContext";
 import { SucursalContextProvider } from "../../context/SucursalContext";
 import { Carrito } from "../pages/Carrito/Carrito";
@@ -10,6 +11,7 @@ import SucursalInicio from "../pages/Sucursal/SucursalInicio";
 import Tienda from "../pages/Tienda/Tienda";
 import { Navbar } from "../ui/Navbar/Navbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css'; // No olvides importar el CSS
 
 const AppRouter = () => {
   return (
@@ -18,8 +20,9 @@ const AppRouter = () => {
         <SucursalContextProvider>
         <CarritoContextProvider>
           <Navbar />
+          <ToastContainer
+          position={"bottom-right"}/>
           <Routes>
-            
             <Route path="/" element={<Home />} />
             <Route path="/carrito" element={<Carrito />}></Route>
             <Route path="/misPedidos" element={<MisPedidos/>}/>

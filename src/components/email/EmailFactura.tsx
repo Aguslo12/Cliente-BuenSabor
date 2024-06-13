@@ -1,46 +1,29 @@
 import emailjs from "emailjs-com";
 import { IPedido } from "../../types/Pedidos";
 import { ICliente } from "../../types/Cliente";
+import { IFactura } from "../../types/Factura";
 
-  const createFormattedMessage = (formState: IPedido): string => {
+  const createFormattedMessage = (formState: IFactura): string => {
     console.log("ACA ARARHASDKJHASDKASHDJSASHKHASDKJASDJAKSDSKJH")
     console.log(formState)
-
-    const detallesPedidoFormatted = formState.detallesPedido.map((detalle) => {
-      return `- Producto: ${detalle.idArticulo}, Cantidad: ${detalle.cantidad}`;
-    }).join('\n');
   
-    const facturaDetails = formState.factura ? 
-      `Número de factura: ${formState.factura.mpPaymentId}\nTotal: ${formState.factura.totalVenta}` : 
+    const facturaDetails = formState ? 
+      `Número de factura: ${formState.mpPaymentId}\nTotal: ${formState.totalVenta}\n
+      Fecha de facturación: ${formState.fechaFacturacion}\nForma de pago: ${formState.formaPago}\n
+      MercadoPago Payment Id: ${formState.mpPaymentId}\n Mercado Pago Preference Id${formState.mpPreferenceId}` : 
       'No hay factura asociada';
-  
-    const empleadoDetails = formState.empleado ? 
-      `Empleado asignado: ${formState.empleado.nombre}\nCargo: ${formState.empleado}` : 
-      'No hay empleado asignado';
+
   
     return `
-      Detalles del pedido:
+      Factura del pedido:
       --------------------
       ID: ${formState.id}
-      Detalles del pedido:
-      ${detallesPedidoFormatted}
-      Total: ${formState.total}
-      Estado: ${formState.estado}
-      Tipo de envío: ${formState.tipoEnvio}
-      Cliente: ${formState.cliente.nombre || 'No especificado'}
-      Domicilio: ${formState.domicilio.calle || 'No especificado'}
-      Sucursal: ${formState.sucursal.nombre || 'No especificado'}
-      Factura:
+      ------Factura-------
       ${facturaDetails}
-      Forma de pago: ${formState.formaPago}
-      Fecha del pedido: ${formState.fechaPedido || 'No especificada'}
-      Hora estimada de finalización: ${formState.horaEstimadaFinalizacion ? formState.horaEstimadaFinalizacion : 'No especificada'}
-      Total costo: ${formState.totalCosto}
-      ${empleadoDetails}
     `;
   };
   
-  const sendEmail = async (formState: IPedido) => {
+  const sendEmail = async (formState: IFactura) => {
     const storedCliente = sessionStorage.getItem("cliente");
   let user: ICliente | undefined = undefined;
 

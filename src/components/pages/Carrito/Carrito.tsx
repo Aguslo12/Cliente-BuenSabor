@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { CardArticuloCarrito } from "../../ui/Cards/CardArticuloCarrito";
 import { ContainerCarrito } from "../../ui/Containers/ContainerCarrito";
-import { Bounce, ToastContainer, toast } from "react-toastify";
-import {  useCarrito, useSucursalContext } from "../../../hooks/useContext";
+import {  useCarrito } from "../../../hooks/useContext";
 import "react-toastify/dist/ReactToastify.css";
 
 export const Carrito = () => {
@@ -20,9 +19,6 @@ export const Carrito = () => {
         ) : (
           <div></div>
         )}
-        <>
-          <ToastContainer />
-        </>
       </div>
     </div>
   );
