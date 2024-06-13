@@ -10,12 +10,15 @@ const SucursalInicio = () => {
   console.log(nombreEmpresa);
 
   return (
-    <div className=" h-auto pt-24">
+    <div className="flex h-auto justify-center w-screen pt-24">
       <div className="flex flex-col">
         <div className="flex flex-col justify-center items-center w-full">
         <p className="text-3xl text-start font-semibold flex p-5 text-red-500">Sucursales</p>
           {/* <p className="text-3xl font-semibold flex p-5">Sucursales de {nombreEmpresa}</p> */}
+          <div className="flex flex-row flex-wrap justify-center">
           <ContainerSucursal />
+          </div>
+          
         </div>
       </div>
     </div>

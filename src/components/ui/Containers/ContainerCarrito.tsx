@@ -5,16 +5,16 @@ import { BackendMethods } from "../../../services/BackendClient";
 import { IDetallePedidoIdArt } from "../../../types/DetallePedidoIdArt";
 import { ICliente } from "../../../types/Cliente";
 import { IFactura } from "../../../types/Factura";
-import { IHoraEstimadaFinalizacion } from "../../../types/HoraEstimadaFinalizacion";
-import { IEmpleado } from "../../../types/Empleado";
 import { Link } from "react-router-dom";
 import { IDomicilioCompleto } from "../../../types/DomicilioCompleto";
 import CheckoutMP from "../CheckoutMP/CheckoutMP";
+import EmailFactura from "../../email/EmailFactura";
+import { IFormPedido } from "../../../types/Forms/FormPedido";
 
 export const ContainerCarrito = () => {
   const { cart, limpiarCarrito } = useCarrito();
   const backend = new BackendMethods();
-  const { suc, pedidoEnviado } = useSucursalContext();
+  const { suc } = useSucursalContext();
   const [direccion, SetDireccion] = useState();
   const [domicilio, setDomicilio] = useState<number>();
 
@@ -28,25 +28,6 @@ export const ContainerCarrito = () => {
   function eliminarTodo() {
     limpiarCarrito();
   }
-
-  type FormState = {
-    [key: string]: any;
-    id: number;
-    eliminado: boolean;
-    detallesPedido: IDetallePedidoIdArt[];
-    total: number;
-    estado: string;
-    tipoEnvio: string;
-    idCliente: number | undefined;
-    idDomicilio: number | undefined;
-    idSucursal: number | undefined;
-    factura: IFactura | null;
-    formaPago: string;
-    fechaPedido: string | null;
-    horaEstimadaFinalizacion: IHoraEstimadaFinalizacion | null;
-    totalCosto: number;
-    empleado: IEmpleado | null;
-  };
 
   const cambiarDireccion = (event) => {
     SetDireccion(event.target.value);
@@ -89,14 +70,14 @@ export const ContainerCarrito = () => {
       );
       if (dirActual) {
         setDomicilio(dirActual.id);
-        console.log(dirActual.id)
+        console.log(dirActual.id);
       }
       console.log(`DIRECCION ACTUAL`);
-      console.log(dirActual)
+      console.log(dirActual);
     }
   }, [direccion]);
 
-  const [formState, setFormState] = useState<FormState>({
+  const [formState, setFormState] = useState<IFormPedido>({
     id: 0,
     detallesPedido: cart.map(
       (item) =>
@@ -153,14 +134,15 @@ export const ContainerCarrito = () => {
       console.log("SANCHO PANZA");
       console.log(res);
       if (res.estado === "RECHAZADO") {
-        pedidoEnviado(3);
+        console.log("falta de stock");
       } else {
-        pedidoEnviado(1);
+        EmailFactura(res)
+        console.log("enviado");
         eliminarTodo();
       }
     } catch (error) {
       console.error("Error posting pedido:", error);
-      pedidoEnviado(2);
+      console.log("hubo un problema");
     }
   };
 
@@ -176,13 +158,15 @@ export const ContainerCarrito = () => {
           <div className="text-base flex justify-between my-8">
             <b>Total:</b>{" "}
             <span className="flex">
-              $ <p className="underline decoration-2 decoration-red-500"> {calcularTotalProductos()}</p>
+              ${" "}
+              <p className="underline decoration-2 decoration-red-500">
+                {" "}
+                {calcularTotalProductos()}
+              </p>
             </span>
           </div>
           <div className="text-base flex justify-center text-center font-bold">
-          <p >
-            Dirección de envío:
-          </p>
+            <p>Dirección de envío:</p>
           </div>
           <select
             className="flex select select-bordered mb-4 bg-red-600 text-white font-semibold text-center justify-center"
@@ -201,17 +185,20 @@ export const ContainerCarrito = () => {
           <div className="card-actions mt-5 w-full">
             {client ? (
               formState.idDomicilio === undefined ? (
-                <div className="w-full text-center text-white bg-green-500/60 p-3 rounded-lg"> Coloque un domicilio</div>
+                <div className="w-full text-center text-white bg-green-500/60 p-3 rounded-lg">
+                  {" "}
+                  Coloque un domicilio
+                </div>
               ) : (
                 <div className="w-full">
-                <button
-                  className="btn btn-success bg-green-600/90 border-green-600/90 text-white w-full"
-                  onClick={postPedido}
-                >
-                  Pagar en efectivo
-                </button>
-                <CheckoutMP pedido={formState} />
-              </div>
+                  <button
+                    className="btn btn-success bg-green-600/90 border-green-600/90 text-white w-full"
+                    onClick={postPedido}
+                  >
+                    Pagar en efectivo
+                  </button>
+                  <CheckoutMP pedido={formState} />
+                </div>
               )
             ) : (
               <Link to={"/iniciarSesion"} className="w-full">

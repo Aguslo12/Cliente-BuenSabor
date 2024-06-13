@@ -1,9 +1,11 @@
+import { ILocalidad } from "../Domicilio/Localidad";
+
 export interface IDomicilioDto {
     id: number,
     calle: string,
-    numero: number,
-    cp: number,
-    piso: number,
-    nroDpto: number,
-    idLocalidad: number
+    numero: string,
+    cp: string,
+    piso: string,
+    nroDpto: string,
+    localidad: ILocalidad | null
 }

@@ -19,7 +19,7 @@ const ContainerEmpresa = () => {
   }, []);
 
   return (
-    <div className="flex flex-row flex-wrap mt-4">
+    <div className="flex flex-row justify-center flex-wrap mt-4">
       {empresas.map((empresa) => (
         <CardEmpresa
           key={empresa.id} // Use empresa.id as the unique key

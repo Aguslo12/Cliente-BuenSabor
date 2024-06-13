@@ -55,11 +55,14 @@ export const Register = () => {
 
       cliente.domicilios = domiciliosGuardados;
 
+      console.log("ESTO VOY A ENVIAR")
+      console.log(cliente)
       const res: ICliente = await backend.postConImagen(
         `${import.meta.env.VITE_LOCAL}cliente/save`,
         cliente as IFormRegister,
         files as File
       );
+      console.log("ESTO DEVUELVE")
       console.log(res);
     } catch (error) {
       console.error(error);

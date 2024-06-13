@@ -1,5 +1,5 @@
 import ContainerEmpresa from "../../ui/Containers/ContainerEmpresa";
-import { ContainerPromocion } from "../../ui/Containers/ContainerPromocion";
+
 
 export const EmpresaInicio = () => {
   return (

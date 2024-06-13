@@ -4,10 +4,7 @@ import { BsFillCartFill } from "react-icons/bs";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useCarrito } from "../../../hooks/useContext";
 import { BackendMethods } from "../../../services/BackendClient";
-import { IDetallePedidoDos } from "../../../types/DetallePedidoDos";
 import { IDetallePedido } from "../../../types/DetallePedido";
-import { ModalDetalleArt } from "../Modals/ModalDetalleArt";
-
 const CardArticulo: FC<IArticuloManufacturado> = ({
   id,
   denominacion,
@@ -79,7 +76,10 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
     >
       {imagenes !== undefined && imagenes.length >= 1 && (
         <figure>
-          <img src={imagenes[0].url} alt="promo" className="w-full" onClick={() => document.getElementById(`my_modal_${id}`).showModal()}/>
+          <img src={imagenes[0].url} alt="promo" className="w-full" />
+          <div className="absolute top-0 right-0 bg-red-600 bg-opacity-70 text-white p-2 rounded-md cursor-pointer hover:bg-opacity-90 transition-all" onClick={() => document.getElementById(`my_modal_${id}`).showModal()}>
+            Ver detalle
+          </div>
         </figure>
       )}
       <div className="">
@@ -124,7 +124,7 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
       </div>
       <div>
         <dialog id={`my_modal_${id}`} className="modal">
-          <div className="modal-box max-w-[600px] h-full max-h-[600px]">
+          <div className="modal-box max-w-[600px] h-full max-h-[680px]">
             <form method="dialog">
               <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                 ✕
@@ -139,6 +139,9 @@ const CardArticulo: FC<IArticuloManufacturado> = ({
                 alt={imagenes[0].name}
                 className="rounded-md max-h-[325px] h-full"
               />
+              <div className="flex justify-center text-lg font-semibold pt-2">
+                <p>{descripcion}</p>
+              </div>
               <div className="flex flex-col font-bold w-full mt-3 space-y-3">
                 <p className="flex justify-between w-full">
                   {" "}

@@ -1,13 +1,12 @@
 import React, { FC, useState } from "react";
 import { IPedido } from "../../../types/Pedidos";
-import { IDetallePedidoDos } from "../../../types/DetallePedidoDos";
 
 export const CardPedido: FC<IPedido> = ({
   id,
   estado,
   fechaPedido,
   formaPago,
-  horaFinalizacion,
+  horaEstimadaFinalizacion,
   tipoEnvio,
   total,
   detallesPedido,
@@ -18,7 +17,7 @@ export const CardPedido: FC<IPedido> = ({
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <div className="relative h-full card card-compact w-52 shadow-xl top-24">
+    <div className="relative h-full card card-compact w-52 shadow-xl">
       <div className="card-title flex justify-center pt-5">Pedido Nro {id}</div>
       <div className="card-body">
         <p className="flex w-full justify-between">
@@ -63,7 +62,7 @@ export const CardPedido: FC<IPedido> = ({
             </p>
             {estado === "ENTREGADO" ? (
               <p className="flex w-full justify-between font-semibold">
-                Finalizó: <b className="font-bold">{horaFinalizacion}</b>
+                Finalizó: <b className="font-bold">{horaEstimadaFinalizacion}</b>
               </p>
             ) : (
               <div></div>

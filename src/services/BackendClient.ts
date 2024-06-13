@@ -77,6 +77,19 @@ export abstract class BackendClient<T> extends AbstractBackendClient<T> {
     return this.request(path, options);
   }
 
+  async postSinData(url: string): Promise<T> {
+    const path = url;
+    const options: RequestInit = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+
+    return this.request(path, options);
+  }
+
   async postConImagen(url: string, entity: T, file: File) {
     const formData = new FormData();
     const blob = new Blob([JSON.stringify(entity)], {
