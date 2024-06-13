@@ -1,5 +1,4 @@
 import emailjs from "emailjs-com";
-import { IPedido } from "../../types/Pedidos";
 import { ICliente } from "../../types/Cliente";
 import { IFactura } from "../../types/Factura";
 
@@ -9,7 +8,7 @@ import { IFactura } from "../../types/Factura";
   
     const facturaDetails = formState ? 
       `Número de factura: ${formState.mpPaymentId}\nTotal: ${formState.totalVenta}\n
-      Fecha de facturación: ${formState.fechaFacturacion}\nForma de pago: ${formState.formaPago}\n
+      Fecha de facturación: ${formState.fechaFcturacion}\nForma de pago: ${formState.formaPago}\n
       MercadoPago Payment Id: ${formState.mpPaymentId}\n Mercado Pago Preference Id${formState.mpPreferenceId}` : 
       'No hay factura asociada';
 

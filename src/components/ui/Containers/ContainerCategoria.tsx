@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { ICategoriaShort } from "../../../types/ShortDtos/CategoriaShort";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { setCategory } from "../../../redux/slices/globalCategory";
+import { ISucursal } from "../../../types/Sucursal";
 
 const ContainerCategoria = () => {
   const backend = new BackendMethods();
@@ -12,6 +13,13 @@ const ContainerCategoria = () => {
   const sucursalSeleccionada = useAppSelector(
     (state) => state.GlobalSucursal.selected
   );
+
+  const storedCliente = sessionStorage.getItem("sucursal");
+  let sucursal: ISucursal | undefined = undefined;
+
+  if (storedCliente) {
+    sucursal = JSON.parse(storedCliente) as ISucursal;
+  }
 
   const dispatch = useAppDispatch();
 
@@ -25,7 +33,7 @@ const ContainerCategoria = () => {
   useEffect(() => {
     const traerCategorias = async () => {
       const res: ICategoriaShort[] = (await backend.getAll(
-        `${import.meta.env.VITE_LOCAL}sucursal/getCategorias/${sucursalSeleccionada}`
+        `${import.meta.env.VITE_LOCAL}sucursal/getCategorias/${sucursal?.id}`
       )) as ICategoriaShort[];
       setCategorias(res);
     };

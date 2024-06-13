@@ -42,6 +42,7 @@ const CardSucursal: FC<ISucursalShort> = ({
     console.log(`sucId= ${suc?.id} detalleId= ${detalle.id}`)
     if(suc?.id !== detalle.id){
       limpiarCarrito()
+      sessionStorage.setItem('sucursal',JSON.stringify(detalle))
       updateSucursal(detalle)
     }
   }

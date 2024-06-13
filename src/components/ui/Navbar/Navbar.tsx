@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ButtonCarrito } from "./ButtonCarrito";
 import { FaUser } from "react-icons/fa";
-import { useSucursalContext } from "../../../hooks/useContext";
+import { useCarrito, useSucursalContext } from "../../../hooks/useContext";
 import { ICliente } from "../../../types/Cliente";
 import { IoMdSettings } from "react-icons/io";
 import { IoTicket } from "react-icons/io5";
@@ -11,8 +11,10 @@ import { PiList } from "react-icons/pi";
 
 export const Navbar = () => {
   const { cliente, getCliente } = useSucursalContext();
+  const {limpiarCarrito} = useCarrito()
 
   const desLoguearte = () => {
+    limpiarCarrito()
     sessionStorage.removeItem("cliente");
   };
   const storedCliente = sessionStorage.getItem("cliente");
@@ -21,7 +23,6 @@ export const Navbar = () => {
   if (storedCliente) {
     user = JSON.parse(storedCliente) as ICliente;
   }
-
 
   useEffect(() => {
     getCliente(user);

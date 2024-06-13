@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import ContainerCategoria from "../../ui/Containers/ContainerCategoria";
-import ContainerArticulos from "../../ui/Containers/ContainerArticulos";
 import { BsBagPlusFill } from "react-icons/bs";
 import { RiDiscountPercentFill } from "react-icons/ri";
 import { ContainerPromocion } from "../../ui/Containers/ContainerPromocion";
+import { ContainerArticulos } from "../../ui/Containers/ContainerArticulos";
 
 const Tienda = () => {
   const [estado, setEstado] = useState<boolean>(false);

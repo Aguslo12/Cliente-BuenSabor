@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { ICliente } from "../../../types/Cliente";
 import Direccion from "../Perfil/Direccion";
-import Perfil from "../Perfil/Perfil";
+import { Perfil } from "../Perfil/Perfil";
 
 interface iContainerPerfil {
   estado: boolean;

@@ -36,6 +36,8 @@ export const ContainerCarrito = () => {
     SetDireccion(event.target.value);
   };
 
+  const domFiltrados = client?.domicilios.filter((domicilio) => domicilio.eliminado === false)
+
   const calcularTotalProductos = () => {
     const sumaArticulo = cart.reduce((acc, item) => {
       if (item.articulo) {
@@ -57,7 +59,7 @@ export const ContainerCarrito = () => {
   const facturaHardcodeada: IFactura = {
     id: 0,
     eliminado: false,
-    fechaFacturacion: null, // Fecha en formato ISO
+    fechaFcturacion: null, // Fecha en formato ISO
     mpPaymentId: 123456789,
     mpMerchantOrderId: 987654321,
     mpPreferenceId: "abcdefg12345",
@@ -162,7 +164,7 @@ export const ContainerCarrito = () => {
       <div className="card card-compact w-96 shadow-xl bg-white text-black">
         <div className="card-body h-full">
           <div className="flex justify-center">
-            <h1 className="card-title text-2xl w-28 justify-center bg-red-500 p-1 rounded-lg text-white">
+            <h1 className="card-title text-2xl w-28 justify-center bg-red-600 p-1 rounded-lg text-white">
               Carrito
             </h1>
           </div>
@@ -186,11 +188,15 @@ export const ContainerCarrito = () => {
             <option disabled selected>
               Elegir dirección
             </option>
-            {client?.domicilios.map((domicilio) => (
-              <option key={domicilio.id} value={domicilio.calle}>
-                {domicilio.calle}
-              </option>
-            ))}
+            {domFiltrados != undefined ? (
+              domFiltrados.map((domicilio) => (
+                <option key={domicilio.id} value={domicilio.calle}>
+                  {domicilio.calle}
+                </option>
+              ))
+            ) : (
+              <div></div>
+            )}
           </select>
           <div>
             <p className="flex justify-center text-base font-bold">Forma de entrega</p>

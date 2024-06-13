@@ -1,7 +1,7 @@
 export interface IFactura {
     id: number;
     eliminado: boolean;
-    fechaFacturacion: string | null;
+    fechaFcturacion: string | null;
     mpPaymentId: number;
     mpMerchantOrderId: number;
     mpPreferenceId:string;

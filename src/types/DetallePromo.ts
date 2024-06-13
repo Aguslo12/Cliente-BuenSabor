@@ -6,6 +6,7 @@ export interface IDetallePromo {
   eliminado:boolean;
   descripcionDescuento: string;
   tipoPromocion: string;
+  cantidad: number;
   articulosManufacturados: IArticuloManufacturado | undefined;
   insumos: IArticuloInsumo | undefined;
 }
