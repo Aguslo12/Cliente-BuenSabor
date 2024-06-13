@@ -26,8 +26,10 @@ const Direccion = () => {
     console.log(res);
   };
 
-  const domFiltrados = client?.domicilios.filter((domicilio) => domicilio.eliminado === false)
-
+  if (client?.domicilios != undefined || client?.domicilios != null) {
+    const domFiltrados = client?.domicilios.filter((domicilio) => domicilio.eliminado === false)
+  }
+ 
   return (
     <div className="flex text-black w-[1600px] text-3xl ml-10 pt-10 flex-col">
       <div className="flex justify-between">
