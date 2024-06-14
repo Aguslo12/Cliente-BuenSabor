@@ -74,9 +74,11 @@ function CheckoutMP({ pedido }: CheckoutMPProps) {
   };
 
   const handleCompra = (idPreference: string) => {
-    toast.success(`Se a guardado el pedido
-      Será redirigido a Mercado Pago`);
+    toast.success(`Se a guardado el pedido,
+      será redirigido a Mercado Pago`);
     setCompra(true);
+    console.log("LA ID PREFERENCEEE")
+    console.log(idPreference)
     setTimeout(() => {
       const url = `https://sandbox.mercadopago.com.ar/checkout/v1/redirect?preference-id=${idPreference}`;
       window.open(url, "_blank");
