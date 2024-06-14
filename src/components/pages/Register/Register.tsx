@@ -11,7 +11,7 @@ import ImageInput from "../../ui/Forms/Inputs/ImageInput";
 import { IFormRegister } from "../../../types/Forms/FormRegister";
 
 export const Register = () => {
-  const [mostrarAlerta, setMostrarAlerta] = useState(false);
+  const [mostrarAlerta] = useState(false);
   const [actualizacion, setActualizacion] = useState(false);
   const [nombreUsado, setNombreUsado] = useState(false);
   const [esperar, setEsperar] = useState<boolean>(false);
@@ -64,12 +64,12 @@ export const Register = () => {
       );
       console.log("ESTO DEVUELVE")
       console.log(res);
+      setExito(true);
     } catch (error) {
       console.error(error);
       mostrarUsadoONo();
       setEsperar(false);
     }
-    setExito(true);
     setActualizacion(!actualizacion);
     setSubmitting(false);
   };

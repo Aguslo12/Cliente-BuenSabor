@@ -52,6 +52,7 @@ function CheckoutMP({ pedido }: CheckoutMPProps) {
         });
         console.log("LA RESPUESTA DEL MERCADOPAGO PAPII");
         console.log(response);
+        console.log(response.factura)
         if (response.factura != undefined) {
           EmailFactura(response.factura);
           handleCompra(response.factura?.mpPreferenceId);

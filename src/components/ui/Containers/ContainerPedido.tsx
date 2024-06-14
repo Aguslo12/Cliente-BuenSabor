@@ -24,6 +24,7 @@ export const ContainerPedido = () => {
       `${import.meta.env.VITE_LOCAL}pedido/getPorEstado/${estado}/${cliente?.id}`
     )) as IPedido[];
     setPedidos(res);
+    console.log("LOS PEDIDOS")
     console.log(res)
     setLoading(false)
   };
@@ -63,6 +64,7 @@ export const ContainerPedido = () => {
             <option>PREPARACION</option>
             <option>CANCELADO</option>
             <option>ENTREGADO</option>
+            <option>ENVIANDO</option>
           </select>
         </div>
         <div className="flex flex-row items-center space-x-5">
@@ -103,6 +105,11 @@ export const ContainerPedido = () => {
               tipoEnvio={pedido.tipoEnvio}
               total={pedido.total}
               totalCosto={pedido.totalCosto}
+              domicilio={pedido.domicilio}
+              cliente={pedido.cliente}
+              empleado={pedido.empleado}
+              factura={pedido.factura}
+              sucursal={pedido.sucursal}
               key={id}
             />
           ))

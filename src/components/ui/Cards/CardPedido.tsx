@@ -10,7 +10,8 @@ export const CardPedido: FC<IPedido> = ({
   tipoEnvio,
   total,
   detallesPedido,
-  sucursal
+  sucursal,
+  factura
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 

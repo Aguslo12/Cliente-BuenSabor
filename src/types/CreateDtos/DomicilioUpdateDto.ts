@@ -1,6 +1,4 @@
-import { ILocalidad } from "./Localidad";
-
-export interface IDomicilio {
+export interface IDomicilioUpdate {
     id: number,
     eliminado: boolean,
     calle: string,
@@ -8,5 +6,5 @@ export interface IDomicilio {
     cp: number,
     piso: number,
     nroDpto: number,
-    localidad: ILocalidad | number,
+    idLocalidad: number,
 }
