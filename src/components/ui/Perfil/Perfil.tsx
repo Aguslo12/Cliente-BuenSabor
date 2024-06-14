@@ -3,6 +3,7 @@ import { ICliente } from "../../../types/Cliente";
 import { Formik, Form, Field } from "formik";
 import { BackendMethods } from "../../../services/BackendClient";
 import { IClienteDto } from "../../../types/CreateDtos/ClienteShortDto";
+import { IClienteUpdate } from "../../../types/CreateDtos/ClienteUpdateDto";
 
 export const Perfil = () => {
   const storedCliente = sessionStorage.getItem("cliente");
@@ -15,9 +16,9 @@ export const Perfil = () => {
   console.log("ESTE ES EL CLIENTEEE");
   console.log(initialClient);
 
-  const [client, setClient] = useState<ICliente | null>(initialClient);
+  const [client, setClient] = useState<IClienteUpdate | null>(initialClient);
 
-  const handleSave = async (values: ICliente) => {
+  const handleSave = async (values: IClienteUpdate) => {
     const backend = new BackendMethods();
     try {
       // Incluimos los domicilios existentes en la actualización
@@ -42,7 +43,7 @@ export const Perfil = () => {
 
   return (
     <div className="flex text-black ml-10 pt-10 w-[530px] flex-col space-y-5">
-      <p className="text-2xl font-bold mb-4">Editar Perfil</p>
+      <p className="text-2xl font-bold mb-4">Perfil</p>
       <div className="flex flex-row p-5 shadow-lg rounded-3xl bg-white">
         <div className="flex flex-col items-center">
           <img
@@ -72,14 +73,7 @@ export const Perfil = () => {
           <p>
             <strong>Usuario:</strong> {client?.usuario.userName}
           </p>
-          <button
-            className="mt-5 w-32 justify-center text-white bg-red-600 btn btn-error"
-            onClick={() =>
-              document.getElementById(`my_modal_${client?.id}`)?.showModal()
-            }
-          >
-            Editar información
-          </button>
+          
         </div>
       </div>
 
@@ -101,7 +95,7 @@ export const Perfil = () => {
                   cp: client.domicilios[0].cp,
                   eliminado: client.domicilios[0].eliminado,
                   id: client.domicilios[0].id,
-                  localidad: client.domicilios[0].localidad.id,
+                  idLocalidad: client.domicilios[0].localidad.id,
                   nroDpto: client.domicilios[0].nroDpto,
                   numero: client.domicilios[0].numero,
                   piso: client.domicilios[0].piso,

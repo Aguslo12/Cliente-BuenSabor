@@ -90,12 +90,14 @@ const Direccion = () => {
     <div className="flex text-black w-[1600px] text-3xl ml-10 pt-10 flex-col">
       <div className="flex justify-between">
         <p>Mis direcciones</p>
+        {/*
         <button
           className="btn btn-ghost btn-accent bg-green-600 text-white hover:text-green-600 hover:border-green-600 mr-10"
           onClick={() => document.getElementById("my_modal_3").showModal()}
         >
           Añadir dirección +
         </button>
+        */}
       </div>
 
       <div className="flex overflow-x-auto w-[1600px] justify-center mt-10 ">
@@ -108,7 +110,6 @@ const Direccion = () => {
               <th>Código P.</th>
               <th>Piso</th>
               <th>Nro. Dpto.</th>
-              <th>Editar</th>
               <th>Eliminar</th>
             </tr>
           </thead>
@@ -128,11 +129,13 @@ const Direccion = () => {
                     <td>{domicilio.cp}</td>
                     <td>{domicilio.piso}</td>
                     <td>{domicilio.nroDpto}</td>
+                    {/* 
                     <td>
                       <button className="btn btn-sm btn-primary">
                         <AiOutlineEdit className="text-white" />
                       </button>
                     </td>
+                    */}
                     <td>
                       <button
                         className="btn btn-sm btn-error"

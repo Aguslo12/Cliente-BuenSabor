@@ -3,34 +3,75 @@ import { CardPedido } from "../Cards/CardPedido";
 import { IPedido } from "../../../types/Pedidos";
 import { BackendMethods } from "../../../services/BackendClient";
 import { ICliente } from "../../../types/Cliente";
+import { ISucursal } from "../../../types/Sucursal";
 
 export const ContainerPedido = () => {
   const backend = new BackendMethods();
-  const [estado, setEstado] = useState<string>("PENDIENTE")
+  const [estado, setEstado] = useState<string>("PENDIENTE");
+  const [fecha, setFecha] = useState("2024-06-10");
+  const [fechaFin, setFechaFin] = useState("2024-06-15");
 
   const storedCliente = sessionStorage.getItem("cliente");
+
+  const storedSucursal = sessionStorage.getItem("sucursal");
+  let sucursal: ISucursal | undefined = undefined;
+
+  if (storedSucursal) {
+    sucursal = JSON.parse(storedSucursal) as ISucursal;
+  }
+
+  const handleInputChange = (event) => {
+    const { id, value } = event.target;
+
+    if (id === "fecha-1") {
+      setFecha(value);
+    } else if (id === "fecha-2") {
+      setFechaFin(value);
+    }
+  };
 
   let cliente: ICliente | undefined = undefined;
 
   if (storedCliente) {
     cliente = JSON.parse(storedCliente) as ICliente;
   }
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
 
+  const baseUrl = `http://localhost:8080/pedido/getPorFechaYClienteYEstado/${sucursal?.id}/${cliente?.id}`;
+  const url = `${baseUrl}?fechaInicio=${fecha}&fechaFin=${fechaFin}&estado=${estado}`;
+
+  useEffect(() => {
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setPedidos(data);
+      })
+      .catch((error) => {
+        console.error("Hubo un problema con la solicitud fetch:", error);
+      });
+  }, [fecha, fechaFin, estado]);
+
   const traerPedidos = async () => {
-    console.log(estado)
+    console.log(estado);
     const res: IPedido[] = (await backend.postSinData(
-      `${import.meta.env.VITE_LOCAL}pedido/getPorEstado/${estado}/${cliente?.id}`
+      `${import.meta.env.VITE_LOCAL}pedido/getPorEstado/${estado}/${
+        cliente?.id
+      }`
     )) as IPedido[];
     setPedidos(res);
-    console.log("LOS PEDIDOS")
-    console.log(res)
-    setLoading(false)
+    console.log("LOS PEDIDOS");
+    console.log(res);
+    setLoading(false);
   };
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     traerPedidos();
   }, [estado]);
 
@@ -41,7 +82,8 @@ export const ContainerPedido = () => {
 
   console.log(cliente?.pedidos.length);
 
-  return cliente?.pedidos.length != undefined && cliente?.pedidos.length <= 0 ? (
+  return cliente?.pedidos.length !== undefined &&
+    cliente?.pedidos.length < 0 ? (
     <div className="flex w-screen h-screen items-center justify-center">
       <div className="text-red-600 font-medium text-center flex text-4xl flex-col space-y-2">
         <p>Todavía no hay pedidos</p>
@@ -54,8 +96,11 @@ export const ContainerPedido = () => {
         <h1 className="text-2xl">Filtrar por:</h1>
         <div className="flex flex-row items-center space-x-5">
           <p className="text-2xl">Estado: </p>
-          <select className="select select-error w-full text-xl max-w-xs" value={estado} // Asigna el estado 'estado' como valor seleccionado del select
-            onChange={handleChangeEstado}>
+          <select
+            className="select select-error w-full text-xl max-w-xs"
+            value={estado} // Asigna el estado 'estado' como valor seleccionado del select
+            onChange={handleChangeEstado}
+          >
             <option disabled selected>
               Todos
             </option>
@@ -69,51 +114,52 @@ export const ContainerPedido = () => {
         </div>
         <div className="flex flex-row items-center space-x-5">
           <p className="text-2xl">Fecha: </p>
-          <select className="select select-error w-full text-xl max-w-xs">
-            <option disabled selected>
-              Todos
-            </option>
-            <option>PENDIENTE</option>
-          </select>
+          <input
+            id="fecha-1"
+            value={fecha}
+            onChange={handleInputChange}
+            type="date"
+            className="w-full text-xl max-w-xs select select-error"
+          />
           <p>/</p>
-          <select className="select select-error w-full text-xl max-w-xs">
-            <option disabled selected>
-              Todos
-            </option>
-            <option>PENDIENTE</option>
-          </select>
+          <input
+            id="fecha-2"
+            value={fechaFin}
+            onChange={handleInputChange}
+            type="date"
+            className="w-full text-xl max-w-xs select select-error"
+          />
         </div>
       </div>
       {loading ? (
         <div className="flex items-center justify-center h-[500px] text-2xl">
-          Cargando <span className="ml-5 loading loading-spinner loading-sm"></span>
+          Cargando{" "}
+          <span className="ml-5 loading loading-spinner loading-sm"></span>
+        </div>
+      ) : pedidos.length <= 0 ? (
+        <div className="flex items-center justify-center h-[500px] text-2xl">
+          No hay productos en estado {estado.toLowerCase()}
         </div>
       ) : (
-        pedidos.length <= 0 ? (
-          <div className="flex items-center justify-center h-[500px] text-2xl">
-            No hay productos en estado {estado.toLowerCase()}
-          </div>
-        ) : (
-          pedidos.map((pedido: IPedido, id: number) => (
-            <CardPedido
-              id={pedido.id}
-              estado={pedido.estado}
-              fechaPedido={pedido.fechaPedido}
-              formaPago={pedido.formaPago}
-              horaEstimadaFinalizacion={pedido.horaEstimadaFinalizacion}
-              detallesPedido={pedido.detallesPedido}
-              tipoEnvio={pedido.tipoEnvio}
-              total={pedido.total}
-              totalCosto={pedido.totalCosto}
-              domicilio={pedido.domicilio}
-              cliente={pedido.cliente}
-              empleado={pedido.empleado}
-              factura={pedido.factura}
-              sucursal={pedido.sucursal}
-              key={id}
-            />
-          ))
-        )
+        pedidos.map((pedido: IPedido, id: number) => (
+          <CardPedido
+            id={pedido.id}
+            estado={pedido.estado}
+            fechaPedido={pedido.fechaPedido}
+            formaPago={pedido.formaPago}
+            horaEstimadaFinalizacion={pedido.horaEstimadaFinalizacion}
+            detallesPedido={pedido.detallesPedido}
+            tipoEnvio={pedido.tipoEnvio}
+            total={pedido.total}
+            totalCosto={pedido.totalCosto}
+            domicilio={pedido.domicilio}
+            cliente={pedido.cliente}
+            empleado={pedido.empleado}
+            factura={pedido.factura}
+            sucursal={pedido.sucursal}
+            key={id}
+          />
+        ))
       )}
     </div>
   );
