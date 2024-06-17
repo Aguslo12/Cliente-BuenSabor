@@ -81,6 +81,7 @@ function CheckoutMP({ pedido }: CheckoutMPProps) {
       const url = `https://sandbox.mercadopago.com.ar/checkout/v1/redirect?preference-id=${idPreference}`;
       window.open(url, "_blank");
       limpiarCarrito();
+      setCompra(false)
     }, 2000);
   };
 
