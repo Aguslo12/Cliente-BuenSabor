@@ -7,9 +7,9 @@ import { IFactura } from "../../types/Factura";
     console.log(formState)
   
     const facturaDetails = formState ? 
-      `Número de factura: ${formState.mpPaymentId}\nTotal: ${formState.totalVenta}\n
+      `Número de factura: ${formState.mpPaymentId}\nTotal: $ ${formState.totalVenta}\n
       Fecha de facturación: ${formState.fechaFcturacion}\nForma de pago: ${formState.formaPago}\n
-      MercadoPago Payment Id: ${formState.mpPaymentId}\n Mercado Pago Preference Id${formState.mpPreferenceId}` : 
+      MercadoPago Payment Id: ${formState.mpPaymentId}\n Mercado Pago Preference Id:${formState.mpPreferenceId}` : 
       'No hay factura asociada';
 
   

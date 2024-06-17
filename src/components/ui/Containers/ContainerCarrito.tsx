@@ -160,7 +160,7 @@ export const ContainerCarrito = () => {
   };
 
   return (
-    <div className="flex justify-end h-[430px] mt-10 mr-14 align-top">
+    <div className="flex justify-end h-[500px] mt-10 mr-14 align-top">
       <div className="card card-compact w-96 shadow-xl bg-white text-black">
         <div className="card-body h-full">
           <div className="flex justify-center">
