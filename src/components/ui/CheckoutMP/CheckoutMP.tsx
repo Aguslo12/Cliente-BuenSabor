@@ -43,7 +43,7 @@ function CheckoutMP({ pedido }: CheckoutMPProps) {
           idSucursal: pedido.idSucursal,
           fechaPedido: pedido.fechaPedido,
           idDomicilio: pedido.idDomicilio,
-          formaPago: pedido.formaPago,
+          formaPago: "MERCADO_PAGO",
           horaEstimadaFinalizacion: pedido.horaEstimadaFinalizacion,
           tipoEnvio: pedido.tipoEnvio,
           totalCosto: pedido.totalCosto,
